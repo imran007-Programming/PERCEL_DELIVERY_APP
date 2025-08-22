@@ -1,8 +1,6 @@
-
-
-import image from "../../assets/auth_logo/ChatGPT Image Aug 22, 2025, 10_06_11 PM.png"
-
-import { LoginForm } from "@/components/Modules/auth/LoginForm"
+import { motion } from "framer-motion"; // Import motion for animations
+import image from "../../assets/auth_logo/ChatGPT Image Aug 22, 2025, 10_06_11 PM.png";
+import { LoginForm } from "@/components/Modules/auth/LoginForm";
 
 export default function Login() {
   return (
@@ -16,17 +14,27 @@ export default function Login() {
         </div>
         <div className="flex flex-1 items-center justify-center">
           <div className="w-full max-w-xs">
-            <LoginForm />
+            {/* Add motion animation here */}
+            <motion.div
+              initial={{ opacity: 0, y: 50 }} // Start off-screen and transparent
+              animate={{ opacity: 1, y: 0 }}  // Fade in and move to position
+              transition={{ duration: 0.5 }}   // 0.5 seconds duration
+            >
+              <LoginForm />
+            </motion.div>
           </div>
         </div>
       </div>
 
       {/* Image Section (Right side) */}
       <div className="flex justify-center items-center">
-        <img
+        <motion.img
           src={image}
           alt="Image"
-          className="h-[350px] w-[400px]"
+          className="h-[550px] w-[600px]"
+          initial={{ opacity: 0, scale: 0.8 }} // Start smaller and transparent
+          animate={{ opacity: 1, scale: 1 }}    // Fade in and scale to normal size
+          transition={{ duration: 0.5 }}        // 0.5 seconds duration
         />
       </div>
     </div>
