@@ -61,7 +61,10 @@ const Navbar = () => {
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
+          <Link to="/login">
             Login
+          </Link>
+
           </motion.button>
           <motion.button
             className="px-4 py-2 border border-primary text-primary rounded-md dark:bg-primary dark:text-white dark:border-primary"
@@ -69,7 +72,9 @@ const Navbar = () => {
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
+           <Link to="/register">
             Sign Up
+          </Link>
           </motion.button>
           <ModeToggle />
         </div>
@@ -149,13 +154,17 @@ const Navbar = () => {
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              Login
+              <Link to="/login">
+            Login
+          </Link>
             </motion.button>
             <button
               className="block w-full px-4 py-2 rounded-md text-white bg-primary"
               onClick={() => setMobileMenuOpen(false)} // Close menu after item click
             >
-              Sign Up
+              <Link to="/register">
+            Sign Up
+          </Link>
             </button>
             <ModeToggle />
           </div>
