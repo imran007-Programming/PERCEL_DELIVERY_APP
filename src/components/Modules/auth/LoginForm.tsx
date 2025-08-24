@@ -1,6 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Link, useNavigate } from "react-router";
+import { Link, Navigate, useNavigate } from "react-router";
 import {
   Form,
   FormControl,
@@ -11,32 +11,36 @@ import {
   FormMessage,
 } from "../../ui/form";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
+import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
 // import Password from "../../ui/password";
-// import { useLoginMutation } from "@/redux/features/auth/auth.api";
 
 import { CheckCircle2, XCircle } from "lucide-react";
-// import { loginSchema } from "@/utils/userRegistrationValidation/userValidation";
-// import { toast } from "sonner";
+
 import { useState } from "react";
 import Password from "@/components/ui/password";
-// import config from "@/config";
 
+import { toast } from "sonner";
+// import config from "@/config";
+import {
+  useLoginMutation,
+ 
+} from "@/components/Redux/Features/Auth/auth.api";
+import { loginSchema } from "@/util/UserVaidationZodSchema/LoginSchema";
+import { role } from "@/Constant/role";
 export function LoginForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
-  // const [login] = useLoginMutation();
- 
-  const [message, setMessage] = useState("");
   const navigate = useNavigate();
-  const form = useForm
-  // <
-  // z.infer<typeof loginSchema>>
-  ({
-    // resolver: zodResolver(loginSchema),
+  const [login] = useLoginMutation();
+
+
+  const [message, setMessage] = useState("");
+
+  const form = useForm<z.infer<typeof loginSchema>>({
+    resolver: zodResolver(loginSchema),
     defaultValues: {
       email: "",
       password: "",
@@ -44,25 +48,34 @@ export function LoginForm({
   });
 
   /* submit handler */
-  const onSubmin = async (data) => {
+  const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     const userInfo = {
       email: data.email,
       password: data.password,
     };
     try {
-      // const result = await login(userInfo).unwrap();
-      // console.log(result);
-      // navigate("/")
+      const result = await login(userInfo).unwrap();
+     
+      const userRole = result?.data?.user?.role;
+
+      if (userRole === role.ADMIN) {
+        navigate("/admin/analytics");
+      } else if (userRole === role.SENDER) {
+        navigate("/sender/analytics");
+      } else if (userRole === role.RECEVIER) {
+        navigate("/reciever/analytics");
+      } else {
+        toast.error("Invalid role or unauthorized access.");
+        navigate("/unauthorized");
+      }
     } catch (error: unknown) {
       const err = error as { data?: { message?: string }; status?: number };
       console.log(err);
-      if (err?.data?.message === "User is not verified") {
-        // toast.error("your account is not verified");
-        navigate("/verify", { state: data.email });
-      }
 
-      if (err.data?.message === "Password does not match") {
-        setMessage("Password does not match");
+      if (err?.data?.message === "User is not verified") {
+        toast.error("Your account is not verified.");
+      } else if (err?.data?.message === "Invalid email and password") {
+        setMessage("Invalid email and password");
       }
     }
   };
@@ -75,7 +88,7 @@ export function LoginForm({
       <div className="grid gap-8 ">
         {/* Form  start*/}
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmin)} className="space-y-4 ">
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
             {/* email */}
             <FormField
               control={form.control}
@@ -198,7 +211,6 @@ export function LoginForm({
             Or continue with
           </span>
         </div>
-        
       </div>
       <div className="text-center text-sm">
         Don&apos;t have an account?{" "}

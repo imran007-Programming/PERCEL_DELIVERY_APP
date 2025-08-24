@@ -1,38 +1,86 @@
+import { createBrowserRouter, Navigate } from "react-router";
 import App from "@/App";
-import About from "@/pages/About/About";
+
 import Login from "@/pages/Auth/Login";
 import Register from "@/pages/Auth/Registration";
-import Contact from "@/pages/Contact/Contuct";
 import HomePage from "@/pages/HomePage";
-import { createBrowserRouter } from "react-router";
+import About from "@/pages/About/About";
+import Contact from "@/pages/Contact/Contuct";
+import Unauthorized from "@/pages/Unauthorize/Unauthorize";
 
-const router=createBrowserRouter([
-    {
-        Component:App,
-        path:"/",
-        children:[
-            {
-                Component:HomePage,
-                index:true
-            },
-            {
-                Component:About,
-                path:"/about"
-            },
-            {
-                Component:Contact,
-                path:"/contact"
-            },
-            {
-                Component:Login,
-                path:'/login'
-            },
-            {
-                Component:Register,
-                path:'/register'
-            }
-        ]
-    }
-])
+import DashboardLayout from "@/components/ui/Layouts/DashboardLayout";
 
-export default router
+import { genarateRoutes } from "@/util/GenarateRoutes/GenarateRoutes";
+import { adminSidebarItems } from "./AdminSidebarsItems";
+import { senderSidebarItems } from "./SenderSidebarItems";
+import { role } from "@/Constant/role";
+import type { Trole } from "@/types";
+import { withAuth } from "@/util/RoleBasedRouteAUTH/WithAuth";
+
+// Define the routes with CommonLayouts wrapping Login and Register components
+const router = createBrowserRouter([
+  {
+    Component: App,
+    path: "/",
+    children: [
+      {
+        Component: HomePage,
+        index: true,
+      },
+      {
+        Component: About,
+        path: "/about",
+      },
+      {
+        Component: Contact,
+        path: "/contact",
+      },
+      {
+        Component:Unauthorized, 
+        path: "/unauthorized",
+      },
+    ],
+  },
+  {
+    Component: withAuth(DashboardLayout,role.ADMIN as Trole),
+    path: "/admin",
+    children: [
+      { index: true, element: <Navigate to="/admin/analytics" /> },
+      ...genarateRoutes(adminSidebarItems),
+    ],
+  },
+
+   {
+    Component: withAuth(DashboardLayout,role.SENDER as Trole),
+    path: "/sender",
+    children: [
+      { index: true, element: <Navigate to="/sender/analytics" /> },
+      ...genarateRoutes(senderSidebarItems),
+    ],
+  },
+
+  // {
+  //   Component: DashboardLayout,
+  //   path: "/reciever",
+  //   children: [
+  //     {
+  //       Component: RecieverPercelInfo,
+  //       path: "analytics",
+  //     },
+  //   ],
+  // },
+  {
+    Component: Login,
+    path: "/login",
+  },
+  {
+    Component: Register,
+    path: "/register",
+  },
+
+
+
+   
+]);
+
+export default router;

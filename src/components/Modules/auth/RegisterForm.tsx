@@ -53,7 +53,7 @@ export function RegisterForm({
       const result = await resgister(userInfo).unwrap();
       console.log(result);
       toast.success("User created successfully");
-      // navigate("/verify");
+      navigate("/");
     } catch (error) {
       console.log("hellow");
       const err = error as { data?: { message?: string } };

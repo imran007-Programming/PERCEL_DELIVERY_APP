@@ -1,0 +1,9 @@
+export const role={
+    ADMIN:"ADMIN",
+    SENDER:"SENDER",
+    RECEVIER:"RECEVIER",
+    DELIVERY_AGENT:"DELIVERY_AGENT"
+}
+
+
+

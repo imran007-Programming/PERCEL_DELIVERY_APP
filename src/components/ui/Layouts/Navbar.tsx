@@ -3,15 +3,38 @@ import Logo from "@/assets/Logo/Logo"; // Import your logo here
 import { ModeToggle } from "./Mode.toggler";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
+import {
+  authApi,
+  useLogoutMutation,
+  useUserInfoQuery,
+} from "@/components/Redux/Features/Auth/auth.api";
 
+import { useDispatch } from "react-redux";
+import { role } from "@/Constant/role";
 
 const Navbar = () => {
+  const [logout] = useLogoutMutation();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
+ const { data } = useUserInfoQuery(undefined);
+
+  const dispatch = useDispatch();
+  const handleLogout = async () => {
+    try {
+      await logout(undefined);
+      dispatch(authApi.util.resetApiState());
+    } catch (error) {
+      console.log(error);
+    }
+  };
+ 
+ 
 
   const menuItems = [
-    { title: "Home", url: "/" },
-    { title: "About", url: "/about" },
-    { title: "Contact", url: "/contact" },
+    { title: "Home", url: "/" , role: "PUBLIC"},
+    { title: "About", url: "/about", role: "PUBLIC" },
+    { title: "Contact", url: "/contact", role: "PUBLIC" },
+    { title: "Dashboard", url: "/admin",role:role.ADMIN },
+    { title: "Dashboard", url: "/sender",role:role.SENDER },
   ];
 
   const handleMobileMenuToggle = () => {
@@ -28,53 +51,81 @@ const Navbar = () => {
       <div className="max-w-screen-xl mx-auto px-4 py-4 flex items-center justify-between">
         {/* Logo */}
         <Link to="/">
-        <div className="flex justify-between items-center gap-2">
-          <Logo />
-          <p className="text-xl font-bold italic">
-            FastTrack{" "}
-            <strong className="text-pretty text-primary">Delivery</strong>
-          </p>
-        </div>
-          </Link>
+          <div className="flex justify-between items-center gap-2">
+            <Logo />
+            <p className="text-xl font-bold italic">
+              FastTrack{" "}
+              <strong className="text-pretty text-primary">Delivery</strong>
+            </p>
+          </div>
+        </Link>
 
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-8">
           {menuItems.map((item) => (
+            <>
+            {
+              item.role==="PUBLIC" &&(
             <motion.div
               key={item.title}
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               transition={{ delay: 0.3, duration: 0.3 }}
             >
-              <Link to={item.url}>
-                <a className="hover:text-primary font-semibold">{item.title}</a>
-              </Link>
+              <Link to={item.url}>{item.title}</Link>
             </motion.div>
+          )}
+            {
+              item.role=== data?.data?.role &&(
+            <motion.div
+              key={item.title}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.3, duration: 0.3 }}
+            >
+              <Link to={item.url}>{item.title}</Link>
+            </motion.div>
+          )}
+        
+
+            
+            
+            </>
           ))}
         </div>
 
         {/* Auth Buttons */}
         <div className="hidden md:flex space-x-4">
-          <motion.button
-            className="px-4 py-2 bg-primary text-white rounded-md dark:bg-primary dark:text-white"
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-          <Link to="/login">
-            Login
-          </Link>
+          {data?.data?.email && (
+            <motion.button
+              className="px-4  py-2 bg-primary text-white rounded-md dark:bg-primary dark:text-white"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              onClick={handleLogout}
+            >
+              Logout
+            </motion.button>
+          )}
 
-          </motion.button>
+          {!data?.data?.email && (
+            <motion.button
+              className="px-4  py-2 bg-primary text-white rounded-md dark:bg-primary dark:text-white"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <Link to="/login">Login</Link>
+            </motion.button>
+          )}
+
           <motion.button
             className="px-4 py-2 border border-primary text-primary rounded-md dark:bg-primary dark:text-white dark:border-primary"
             whileHover={{ scale: 1.05 }}
             whileTap={{ scale: 0.95 }}
             transition={{ type: "spring", stiffness: 300 }}
           >
-           <Link to="/register">
-            Sign Up
-          </Link>
+            <Link to="/register">Sign Up</Link>
           </motion.button>
           <ModeToggle />
         </div>
@@ -136,12 +187,12 @@ const Navbar = () => {
               transition={{ delay: 0.3, duration: 0.3 }}
             >
               <Link to={item.url}>
-                <a
+                <span
                   className="block font-semibold text-black dark:text-white"
                   onClick={() => setMobileMenuOpen(false)} // Close menu after item click
                 >
                   {item.title}
-                </a>
+                </span>
               </Link>
             </motion.div>
           ))}
@@ -154,17 +205,13 @@ const Navbar = () => {
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <Link to="/login">
-            Login
-          </Link>
+              <Link to="/login">Login</Link>
             </motion.button>
             <button
               className="block w-full px-4 py-2 rounded-md text-white bg-primary"
               onClick={() => setMobileMenuOpen(false)} // Close menu after item click
             >
-              <Link to="/register">
-            Sign Up
-          </Link>
+              <Link to="/register">Sign Up</Link>
             </button>
             <ModeToggle />
           </div>
