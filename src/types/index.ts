@@ -8,5 +8,42 @@ export interface ISidebarItems {
     component: ComponentType;
   }[];
 }
+export interface IPercel {
+  weight: Weight;
+  _id: string;
+  senderInfo: string;
+  reciverInfo: string;
+  percelType: string;
+  receiverAddress: string;
+  trackingId: string;
+  fee: number;
+  isPaid: boolean;
+  currentLocation: string;
+  trackingEvents: TrackingEvent[];
+  dispatchLocation: string;
+  pickupAddress: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface Weight {
+  value: number;
+  unit: string;
+}
+
+export interface TrackingEvent {
+  status: string;
+  location: string;
+  note: string;
+  timestamp: string;
+}
+/* errror */
+export interface IError {
+  data: {
+    message: string;
+  };
+}
+
+
 
 export type Trole = "ADMIN" | "SENDER" | "RECEIVER" | "DELIVERY_AGENT";

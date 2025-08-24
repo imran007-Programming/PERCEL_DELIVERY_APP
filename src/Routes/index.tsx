@@ -39,6 +39,14 @@ const router = createBrowserRouter([
         Component:Unauthorized, 
         path: "/unauthorized",
       },
+       {
+    Component: Login,
+    path: "/login",
+  },
+  {
+    Component: Register,
+    path: "/register",
+  },
     ],
   },
   {
@@ -54,7 +62,7 @@ const router = createBrowserRouter([
     Component: withAuth(DashboardLayout,role.SENDER as Trole),
     path: "/sender",
     children: [
-      { index: true, element: <Navigate to="/sender/analytics" /> },
+      { index: true, element: <Navigate to="/sender/createPercel" /> },
       ...genarateRoutes(senderSidebarItems),
     ],
   },
@@ -69,14 +77,7 @@ const router = createBrowserRouter([
   //     },
   //   ],
   // },
-  {
-    Component: Login,
-    path: "/login",
-  },
-  {
-    Component: Register,
-    path: "/register",
-  },
+ 
 
 
 

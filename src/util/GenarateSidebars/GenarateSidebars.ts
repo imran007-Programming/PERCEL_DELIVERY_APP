@@ -4,7 +4,7 @@ import { senderSidebarItems } from "@/Routes/SenderSidebarItems";
 import type { Trole } from "@/types";
 
 export const getSidebarsItems = (userRole: Trole) => {
-  console.log(userRole);
+
 
   switch (userRole) {
     case role.ADMIN:

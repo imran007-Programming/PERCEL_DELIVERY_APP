@@ -37,6 +37,7 @@ export function RegisterForm({
       confirmpassword: "",
       phone: "",
       address: "",
+      shopName: "",
     },
   });
 
@@ -47,13 +48,14 @@ export function RegisterForm({
       password: data.password,
       phone: data.phone,
       address: data.address,
+      shopName: data.shopName,
     };
 
     try {
-      const result = await resgister(userInfo).unwrap();
-      console.log(result);
+    await resgister(userInfo).unwrap();
+    
       toast.success("User created successfully");
-      navigate("/");
+      navigate("/login");
     } catch (error) {
       console.log("hellow");
       const err = error as { data?: { message?: string } };
@@ -236,7 +238,48 @@ export function RegisterForm({
                 );
               }}
             />
+            {/* Shop Name */}
 
+            <FormField
+              control={form.control}
+              name="shopName"
+              render={({ field }) => {
+                const isValidLength = field.value?.length >= 5;
+
+                return (
+                  <FormItem>
+                    <FormLabel>ShopName</FormLabel>
+                    <FormControl>
+                      <Input
+                        className={cn(
+                          "rounded-none border transition-colors duration-200",
+                          !isValidLength
+                            ? "border-red-500 bg-red-50"
+                            : "border-gray-300"
+                        )}
+                        placeholder="123 Main St, City, Country"
+                        {...field}
+                      />
+                    </FormControl>
+                    <div className="mt-2 text-sm flex items-center gap-2">
+                      {isValidLength ? (
+                        <CheckCircle2 className="text-green-500" size={18} />
+                      ) : (
+                        <XCircle className="text-red-500" size={18} />
+                      )}
+                      <span
+                        className={
+                          isValidLength ? "text-green-600" : "text-gray-500"
+                        }
+                      >
+                        shopName must be at least 5 characters
+                      </span>
+                    </div>
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
             {/* Password */}
             <FormField
               control={form.control}

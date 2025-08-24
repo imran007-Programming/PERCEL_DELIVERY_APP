@@ -25,7 +25,7 @@ import { toast } from "sonner";
 // import config from "@/config";
 import {
   useLoginMutation,
- 
+
 } from "@/components/Redux/Features/Auth/auth.api";
 import { loginSchema } from "@/util/UserVaidationZodSchema/LoginSchema";
 import { role } from "@/Constant/role";
@@ -35,7 +35,7 @@ export function LoginForm({
 }: React.HTMLAttributes<HTMLDivElement>) {
   const navigate = useNavigate();
   const [login] = useLoginMutation();
-
+ 
 
   const [message, setMessage] = useState("");
 
@@ -55,13 +55,13 @@ export function LoginForm({
     };
     try {
       const result = await login(userInfo).unwrap();
-     
+
       const userRole = result?.data?.user?.role;
 
-      if (userRole === role.ADMIN) {
+      if ( userRole === role.ADMIN) {
         navigate("/admin/analytics");
       } else if (userRole === role.SENDER) {
-        navigate("/sender/analytics");
+        navigate("/sender");
       } else if (userRole === role.RECEVIER) {
         navigate("/reciever/analytics");
       } else {

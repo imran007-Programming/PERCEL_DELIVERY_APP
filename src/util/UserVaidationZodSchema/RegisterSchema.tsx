@@ -18,7 +18,10 @@ export const registerSchema = z
       .regex(/^[0-9]{11}$/, { message: "Phone must be 11 digits and contain only numbers" }), // Numeric check
     address: z
       .string()
-      .min(8, { message: "Address must be at least 8 characters long" }), // Minimum length check for address
+      .min(8, { message: "Address must be at least 8 characters long" }), 
+    shopName: z
+      .string()
+      .min(5, { message: "ShopName must be at least 5characters long" }), 
     password: z
       .string()
       .min(8, { message: "Password must be at least 8 characters long" })
