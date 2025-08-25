@@ -6,11 +6,13 @@ export interface ISidebarItems {
     title: string;
     url: string;
     component: ComponentType;
+    icon?: React.ComponentType<React.SVGProps<SVGSVGElement>>;
   }[];
 }
 export interface IPercel {
   weight: Weight;
   _id: string;
+
   senderInfo: string;
   reciverInfo: string;
   percelType: string;
@@ -18,6 +20,7 @@ export interface IPercel {
   trackingId: string;
   fee: number;
   isPaid: boolean;
+  isConfirm: boolean;
   currentLocation: string;
   trackingEvents: TrackingEvent[];
   dispatchLocation: string;
@@ -43,7 +46,5 @@ export interface IError {
     message: string;
   };
 }
-
-
 
 export type Trole = "ADMIN" | "SENDER" | "RECEIVER" | "DELIVERY_AGENT";

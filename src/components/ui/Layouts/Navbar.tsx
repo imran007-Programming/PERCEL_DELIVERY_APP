@@ -35,6 +35,7 @@ const Navbar = () => {
     { title: "Contact", url: "/contact", role: "PUBLIC" },
     { title: "Dashboard", url: "/admin",role:role.ADMIN },
     { title: "Dashboard", url: "/sender",role:role.SENDER },
+    { title: "Dashboard", url: "/receiver",role:role.RECEIVER },
   ];
 
   const handleMobileMenuToggle = () => {

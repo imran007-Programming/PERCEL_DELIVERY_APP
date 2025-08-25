@@ -62,8 +62,8 @@ export function LoginForm({
         navigate("/admin/analytics");
       } else if (userRole === role.SENDER) {
         navigate("/sender");
-      } else if (userRole === role.RECEVIER) {
-        navigate("/reciever/analytics");
+      } else if (userRole === role.RECEIVER) {
+        navigate("/receiver/getpercelinfo");
       } else {
         toast.error("Invalid role or unauthorized access.");
         navigate("/unauthorized");

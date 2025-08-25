@@ -16,6 +16,8 @@ import { senderSidebarItems } from "./SenderSidebarItems";
 import { role } from "@/Constant/role";
 import type { Trole } from "@/types";
 import { withAuth } from "@/util/RoleBasedRouteAUTH/WithAuth";
+import RecieverPercelInfo from "@/pages/Reciever/RecieverPercelInfo";
+import { RecevierSidebarItems } from "./ReceiverSideBarsItems";
 
 // Define the routes with CommonLayouts wrapping Login and Register components
 const router = createBrowserRouter([
@@ -57,27 +59,26 @@ const router = createBrowserRouter([
       ...genarateRoutes(adminSidebarItems),
     ],
   },
+    {
+    Component: withAuth(DashboardLayout,role.RECEIVER as Trole),
+    path: "/receiver",
+    children: [
+      {index:true,element:<Navigate to="/receiver/dashboard"/>}
+       ,...genarateRoutes(RecevierSidebarItems)
+    ],
+  },
+ 
 
    {
     Component: withAuth(DashboardLayout,role.SENDER as Trole),
     path: "/sender",
     children: [
-      { index: true, element: <Navigate to="/sender/createPercel" /> },
+      { element: <Navigate to="/sender/createPercel" /> },
       ...genarateRoutes(senderSidebarItems),
     ],
   },
 
-  // {
-  //   Component: DashboardLayout,
-  //   path: "/reciever",
-  //   children: [
-  //     {
-  //       Component: RecieverPercelInfo,
-  //       path: "analytics",
-  //     },
-  //   ],
-  // },
- 
+
 
 
 

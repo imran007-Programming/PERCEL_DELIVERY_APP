@@ -10,7 +10,7 @@ export const adminSidebarItems:ISidebarItems[]=[
         {
           title: "Analytics",
           url: "/admin/analytics",
-          component:Analytics
+          component:Analytics,
         },
         {
           title: "ALL User",

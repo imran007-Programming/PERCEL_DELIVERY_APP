@@ -21,6 +21,13 @@ import { useRegisterMutation } from "@/components/Redux/Features/Auth/auth.api";
 import { registerSchema } from "@/util/UserVaidationZodSchema/RegisterSchema";
 import type z from "zod";
 import { toast } from "sonner";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export function RegisterForm({
   className,
@@ -28,6 +35,7 @@ export function RegisterForm({
 }: React.HTMLAttributes<HTMLDivElement>) {
   const [resgister] = useRegisterMutation();
   const navigate = useNavigate();
+
   const form = useForm({
     resolver: zodResolver(registerSchema),
     defaultValues: {
@@ -38,8 +46,12 @@ export function RegisterForm({
       phone: "",
       address: "",
       shopName: "",
+      role: "SENDER",
     },
   });
+
+  const UserRole = form.watch("role");
+  console.log(UserRole);
 
   const onSubmit = async (data: z.infer<typeof registerSchema>) => {
     const userInfo = {
@@ -48,12 +60,14 @@ export function RegisterForm({
       password: data.password,
       phone: data.phone,
       address: data.address,
-      shopName: data.shopName,
+      shopName: data?.role === "SENDER" ? data.shopName : "",
+      role: data.role,
     };
+    console.log(userInfo);
 
     try {
     await resgister(userInfo).unwrap();
-    
+
       toast.success("User created successfully");
       navigate("/login");
     } catch (error) {
@@ -238,14 +252,62 @@ export function RegisterForm({
                 );
               }}
             />
+
+            {/* ROle */}
+            <FormField
+              control={form.control}
+              name="role"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>ADD Your Role</FormLabel>
+                  <Select
+                    onValueChange={field.onChange}
+                    defaultValue={field.value}
+                  >
+                    <FormControl>
+                      <SelectTrigger className="w-auto">
+                        <SelectValue placeholder="Select a Role" />
+                      </SelectTrigger>
+                    </FormControl>
+                    <SelectContent>
+                      <SelectItem value="SENDER">SENDER</SelectItem>
+                      <SelectItem value="RECEIVER">RECEIVER</SelectItem>
+                    </SelectContent>
+                  </Select>
+
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
             {/* Shop Name */}
 
+            {/* {UserRole === "SENDER" && (
+               <FormField
+              control={form.control}
+              name="shopName"
+              render={({ field }) => {
+                return (
+                  <FormItem>
+                    <FormLabel>ShopName</FormLabel>
+                    <FormControl>
+                      <Input
+                        className="rounded-none border transition-colors duration-200"
+                        placeholder="Shop Name"
+                        {...field}
+                      />
+                    </FormControl>
+
+                    <FormMessage />
+                  </FormItem>
+                );
+              }}
+            />
+            )}  */}
             <FormField
               control={form.control}
               name="shopName"
               render={({ field }) => {
-                const isValidLength = field.value?.length >= 5;
-
                 return (
                   <FormItem>
                     <FormLabel>ShopName</FormLabel>
@@ -253,33 +315,18 @@ export function RegisterForm({
                       <Input
                         className={cn(
                           "rounded-none border transition-colors duration-200",
-                          !isValidLength
-                            ? "border-red-500 bg-red-50"
-                            : "border-gray-300"
+                          UserRole === "RECEIVER" ? "hidden" : "" 
                         )}
-                        placeholder="123 Main St, City, Country"
+                        placeholder="Shop Name"
                         {...field}
                       />
                     </FormControl>
-                    <div className="mt-2 text-sm flex items-center gap-2">
-                      {isValidLength ? (
-                        <CheckCircle2 className="text-green-500" size={18} />
-                      ) : (
-                        <XCircle className="text-red-500" size={18} />
-                      )}
-                      <span
-                        className={
-                          isValidLength ? "text-green-600" : "text-gray-500"
-                        }
-                      >
-                        shopName must be at least 5 characters
-                      </span>
-                    </div>
                     <FormMessage />
                   </FormItem>
                 );
               }}
             />
+
             {/* Password */}
             <FormField
               control={form.control}

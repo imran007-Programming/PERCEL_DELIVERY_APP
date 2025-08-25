@@ -11,22 +11,40 @@ export const percelApi = baseApi.injectEndpoints({
     }),
     getPercelBySender: builder.query({
       query: ({ senderId, params }) => {
-      
-
         return {
           url: `/percel/getpercelInfo/${senderId}`,
           method: "GET",
-          params, // The params will be passed here
+          params,
         };
       },
       providesTags: ["PERCEL"],
       transformResponse: (arg) => arg.data,
     }),
+    getPercelByReceiver: builder.query({
+      query: ({ receiverId, params }) => {
+        return {
+          url: `/percel/getpercelinfo-receiver/${receiverId}`,
+          method: "GET",
+          params,
+        };
+      },
+      providesTags: ["PERCEL"],
+      transformResponse: (arg) => arg.data,
+    }),
+
     cancelPercelStatusBySender: builder.mutation({
       query: ({ percelId, percelStatus }) => ({
         url: `/percel/${percelId}`,
         method: "PATCH",
         data: percelStatus,
+      }),
+      invalidatesTags: ["PERCEL"],
+    }),
+    percelConfirmationByReceiver: builder.mutation({
+      query: (percelId) => ({
+        url: `/percel/confirmation/${percelId}`,
+        method: "PATCH",
+     
       }),
       invalidatesTags: ["PERCEL"],
     }),
@@ -37,4 +55,6 @@ export const {
   useCreatePercelMutation,
   useGetPercelBySenderQuery,
   useCancelPercelStatusBySenderMutation,
+  useGetPercelByReceiverQuery,
+  usePercelConfirmationByReceiverMutation
 } = percelApi;

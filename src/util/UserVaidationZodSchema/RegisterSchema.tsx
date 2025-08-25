@@ -1,5 +1,8 @@
 import z from "zod";
 
+// Define roles enum
+const rolesEnum = z.enum(["RECEIVER", "SENDER"]);
+
 export const registerSchema = z
   .object({
     name: z
@@ -14,14 +17,15 @@ export const registerSchema = z
       }),
     phone: z
       .string()
-      .min(11, { message: "Phone must be exactly 11 digits" }) // Minimum length check
-      .regex(/^[0-9]{11}$/, { message: "Phone must be 11 digits and contain only numbers" }), // Numeric check
+      .min(11, { message: "Phone must be exactly 11 digits" })
+      .regex(/^[0-9]{11}$/, {
+        message: "Phone must be 11 digits and contain only numbers",
+      }),
     address: z
       .string()
-      .min(8, { message: "Address must be at least 8 characters long" }), 
-    shopName: z
-      .string()
-      .min(5, { message: "ShopName must be at least 5characters long" }), 
+      .min(8, { message: "Address must be at least 8 characters long" }),
+    // Conditionally validate `shopName` based on role
+    shopName: z.string(),
     password: z
       .string()
       .min(8, { message: "Password must be at least 8 characters long" })
@@ -34,10 +38,22 @@ export const registerSchema = z
     confirmpassword: z
       .string()
       .min(6, { error: "Confirm password is too short" }),
+    role: rolesEnum,
   })
+  // Conditionally require `shopName` for 'SENDER' role
+  .refine(
+    (data) => {
+      if (data.role === "SENDER") {
+        return data.shopName && data.shopName.length >= 5;
+      }
+      return true;
+    },
+    {
+      message: "ShopName is required for 'SENDER' role",
+      path: ["shopName"],
+    }
+  )
   .refine((data) => data.password === data.confirmpassword, {
     message: "Password and Confirm Password don't match",
-    path: ["confirmpassword"], // path of error
+    path: ["confirmpassword"], // Path of error
   });
-
-//   
