@@ -11,9 +11,7 @@ export const percelApi = baseApi.injectEndpoints({
     }),
     getPercelBySender: builder.query({
       query: ({ senderId, params }) => {
-        // Log the params to the console to check what you're sending
-        console.log("Params sent to query:", params);
-        console.log("senderId:", senderId);
+      
 
         return {
           url: `/percel/getpercelInfo/${senderId}`,

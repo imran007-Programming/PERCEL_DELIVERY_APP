@@ -20,18 +20,22 @@ import {
   SelectContent,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import type { IError, IPercel } from "@/types";
+import Loader from "@/components/ui/Loader";
+import Pagination from "@/util/Pagination/Pagination";
+import PaginationFiLtering from "@/util/Pagination/Pagination";
 
 export default function PercelTable() {
-  const { data, isLoading, error } = useUserInfoQuery(undefined);
+  const { data, isLoading } = useUserInfoQuery(undefined);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("");
-  const [triggerSearch, setTriggerSearch] = useState(false); // Flag to trigger the search
+  const [currentPage, setCurrentPage] = useState(1);
 
+  
   const senderId = data?.data?._id;
 
   const [cancelStatus] = useCancelPercelStatusBySenderMutation();
@@ -43,12 +47,18 @@ export default function PercelTable() {
       params: {
         searchTerm: searchQuery || undefined,
         status: filter === "all" ? undefined : filter || undefined,
+        limit:1,
+        page:currentPage,
       },
     });
 
   // If loading parcels or error occurred, display loading/error messages
   if (isLoading || isLoadingPercels) {
-    return <div>Loading...</div>;
+    return (
+      <div>
+        <Loader />
+      </div>
+    );
   }
 
   // Handle status change and update tracking event
@@ -103,6 +113,7 @@ export default function PercelTable() {
           </SelectTrigger>
           <SelectContent className="bg-white dark:bg-gray-800 border border-gray-300">
             <SelectItem value="all">All Statuses</SelectItem>
+            <SelectItem value="PENDING">PENDING</SelectItem>
             <SelectItem value="CANCELED">CANCELED</SelectItem>
             <SelectItem value="PICKED">PICKED</SelectItem>
             <SelectItem value="IN_TRANSIT">IN_TRANSIT</SelectItem>
@@ -115,12 +126,11 @@ export default function PercelTable() {
       <Table className="table-auto border-collapse border border-gray-300">
         <TableCaption>All Parcels Retrieved Successfully</TableCaption>
         <TableHeader>
-          <TableRow className="bg-gray-800">
+          <TableRow className="bg-gray-200 dark:bg-gray-800">
             <TableHead className="border border-gray-300">
               Percel_Type
             </TableHead>
             <TableHead className="border border-gray-300">Weight</TableHead>
-            {/* <TableHead className="border border-gray-300">Status</TableHead> */}
             <TableHead className="border border-gray-300">Fee</TableHead>
             <TableHead className="border border-gray-300">
               Tracking ID
@@ -142,98 +152,112 @@ export default function PercelTable() {
         </TableHeader>
         <TableBody>
           {senderAllPercels?.percelData?.map(
-            (percel: IPercel, index: number) => (
-              <TableRow
-                key={index}
-                className="border-t border-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-              >
-                <TableCell className="border border-gray-300">
-                  {percel.percelType}
-                </TableCell>
-                <TableCell className="border border-gray-300">
-                  {percel.weight.value} {percel.weight.unit}
-                </TableCell>
-                {/* <TableCell className="border border-gray-300">
-                  {percel.isPaid ? "Paid" : "Unpaid"}
-                </TableCell> */}
-                <TableCell className="border border-gray-300">
-                  {percel.fee} Taka
-                </TableCell>
-                <TableCell className="border border-gray-300">
-                  {percel.trackingId}
-                </TableCell>
-                <TableCell className="border border-gray-300">
-                  {percel.currentLocation}
-                </TableCell>
-                <TableCell className="border border-gray-300">
-                  {percel.pickupAddress}
-                </TableCell>
-                <TableCell className="border border-gray-300">
-                  {percel.dispatchLocation}
-                </TableCell>
+            (percel: IPercel, index: number) => {
+              // Get the last event's status
+              const lastEventStatus = percel.trackingEvents.length
+                ? percel.trackingEvents[percel.trackingEvents.length - 1].status
+                : null;
 
-                <TableCell className="border border-gray-300">
-                  {/* Loop through all tracking events */}
+              // Only display the parcel if the last event status matches the filter
+              if (filter && lastEventStatus !== filter && filter !== "all") {
+                return null;
+              }
 
-                  {percel.trackingEvents.length? percel.trackingEvents?.map((event, eventIndex) => (
-                    <div key={eventIndex} className="mb-2">
-                      <Badge
-                        variant={
-                          event.status === "CANCELED" ? "primary" : "secondary"
-                        }
-                        className={
-                          event.status === "CANCELED"
-                            ? "bg-red-500 text-white"
-                            : "bg-green-500 text-white dark:bg-green-600"
-                        }
-                      >
-                        <strong>Status:</strong> {event.status}
-                      </Badge>
-                      <p>
-                        <strong>Location:</strong> {event.location}
-                      </p>
-                      <p>
-                        <strong>Note:</strong> {event.note}
-                      </p>
-                      <p>
-                        <strong>Time:</strong>{" "}
-                        {new Date(event.timestamp).toLocaleString()}
-                      </p>
-                    </div>
-                  )):"No tracking event found"
-                  
-                  
-                  
-                  }
-                </TableCell>
+              return (
+                <TableRow
+                  key={index}
+                  className="border-t border-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
+                >
+                  <TableCell className="border border-gray-300">
+                    {percel.percelType}
+                  </TableCell>
+                  <TableCell className="border border-gray-300">
+                    {percel.weight.value} {percel.weight.unit}
+                  </TableCell>
+                  <TableCell className="border border-gray-300">
+                    {percel.fee} Taka
+                  </TableCell>
+                  <TableCell className="border border-gray-300">
+                    {percel.trackingId}
+                  </TableCell>
+                  <TableCell className="border border-gray-300">
+                    {percel.currentLocation}
+                  </TableCell>
+                  <TableCell className="border border-gray-300">
+                    {percel.pickupAddress}
+                  </TableCell>
+                  <TableCell className="border border-gray-300">
+                    {percel.dispatchLocation}
+                  </TableCell>
 
-                <TableCell className="border border-gray-300">
-                  <Select
-                    value={selectedStatus}
-                    onValueChange={(newStatus) => setSelectedStatus(newStatus)}
-                  >
-                    <SelectTrigger className="w-32">
-                      <SelectValue placeholder="Select Status" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white dark:bg-gray-800 border border-gray-300">
-                      <SelectItem value="CANCELED">CANCELED</SelectItem>
-                    </SelectContent>
-                  </Select>
-                  <Button
-                    onClick={() =>
-                      handleStatusChange(percel._id, percel.dispatchLocation)
-                    }
-                    className="mt-2 bg-chart-2"
-                    disabled={!selectedStatus}
-                  >
-                    Update Status
-                  </Button>
-                </TableCell>
-              </TableRow>
-            )
+                  <TableCell className="border border-gray-300">
+                    {/* Display the last event's status */}
+                    {percel.trackingEvents.length
+                      ? percel.trackingEvents
+                          .slice(-1) // Get the last event
+                          .map((event, eventIndex) => (
+                            <div key={eventIndex} className="mb-2">
+                              <Badge
+                                variant={
+                                  event.status === "CANCELED"
+                                    ? "primary"
+                                    : "secondary"
+                                }
+                                className={
+                                  event.status === "CANCELED"
+                                    ? "bg-red-500 text-white"
+                                    : "bg-green-500 text-white dark:bg-green-600"
+                                }
+                              >
+                                <strong>Status:</strong> {event.status}
+                              </Badge>
+                              <p>
+                                <strong>Location:</strong> {event.location}
+                              </p>
+                              <p>
+                                <strong>Note:</strong> {event.note}
+                              </p>
+                              <p>
+                                <strong>Time:</strong>{" "}
+                                {new Date(event.timestamp).toLocaleString()}
+                              </p>
+                            </div>
+                          ))
+                      : "No tracking event found"}
+                  </TableCell>
+
+                  <TableCell className="border border-gray-300">
+                    <Select
+                      value={selectedStatus}
+                      onValueChange={(newStatus) =>
+                        setSelectedStatus(newStatus)
+                      }
+                    >
+                      <SelectTrigger className="w-32">
+                        <SelectValue placeholder="Select Status" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white dark:bg-gray-800 border border-gray-300">
+                        <SelectItem value="CANCELED">CANCELED</SelectItem>
+                      </SelectContent>
+                    </Select>
+                    <Button
+                      onClick={() =>
+                        handleStatusChange(percel._id, percel.dispatchLocation)
+                      }
+                      className="mt-2 bg-chart-2"
+                      disabled={!selectedStatus}
+                    >
+                      Update Status
+                    </Button>
+                  </TableCell>
+                </TableRow>
+              );
+            }
           )}
         </TableBody>
       </Table>
+      {/* Pagination */}
+      <PaginationFiLtering currentPage={currentPage} setCurrentPage={setCurrentPage}  senderAllPercels={senderAllPercels} />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 import { useUserInfoQuery } from "@/components/Redux/Features/Auth/auth.api";
+import Loader from "@/components/ui/Loader";
 import type { Trole } from "@/types";
 
 import type { ComponentType } from "react";
@@ -10,7 +11,7 @@ export const withAuth = (Component: ComponentType, requiredRole?: Trole) => {
     const { data, isLoading } = useUserInfoQuery(undefined);
 
     if(isLoading){
-      return <p>Loading.....</p>
+      return <p><Loader/></p>
     }
 
 
