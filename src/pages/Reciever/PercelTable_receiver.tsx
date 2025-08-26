@@ -11,7 +11,7 @@ import { useUserInfoQuery } from "@/components/Redux/Features/Auth/auth.api";
 import {
   useGetPercelByReceiverQuery,
   usePercelConfirmationByReceiverMutation,
-} from "@/components/Redux/Features/Percel/percel.api"; // API hook for fetching receiver's parcels
+} from "@/components/Redux/Features/Percel/percel.api";
 import {
   Select,
   SelectItem,
@@ -26,6 +26,8 @@ import Loader from "@/components/ui/Loader";
 import PaginationFiLtering from "@/util/Pagination/Pagination";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import PercelHistoryModal from "./PercelHistoryModal";
+import { CircleX, ClosedCaptionIcon, CroissantIcon, CrossIcon, LucideCross, X } from "lucide-react";
 
 export default function ReceiverPercelTable() {
   const { data, isLoading } = useUserInfoQuery(undefined);
@@ -34,9 +36,10 @@ export default function ReceiverPercelTable() {
   const [filter, setFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [confirmThePercel] = usePercelConfirmationByReceiverMutation();
+  const [selectedParcel, setSelectedParcel] = useState<IPercel | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
   const receiverId = data?.data?._id;
 
-  // Fetch receiver's incoming parcels using the receiverId and query params
   const { data: getIncomeingPercel, isLoading: isLoadingPercels } =
     useGetPercelByReceiverQuery({
       receiverId,
@@ -48,7 +51,6 @@ export default function ReceiverPercelTable() {
       },
     });
 
-  // If loading parcels or user data, display loading state
   if (isLoading || isLoadingPercels) {
     return (
       <div>
@@ -57,30 +59,39 @@ export default function ReceiverPercelTable() {
     );
   }
 
-  const handleStatusChange = async (percelId: string, lastStatus:string,existConformation:boolean) => {
-    console.log(existConformation)
+  const handleStatusChange = async (
+    percelId: string,
+    lastStatus: string,
+    existConformation: boolean
+  ) => {
     try {
-        if(existConformation){
-            toast.error("The percel is already confirmed")
-        }
-     else if (lastStatus === "DELIVERED") {
+      if (existConformation) {
+        toast.error("The percel is already confirmed");
+      } else if (lastStatus === "DELIVERED") {
         const res = await confirmThePercel(percelId);
-     
-         if(res.data.success){
-              toast.success("percel confirmed successfully")
-         }
-      }
-      else{
-        toast.success("You cant confirm the percel until it delevered")
+        if (res.data.success) {
+          toast.success("percel confirmed successfully");
+        }
+      } else {
+        toast.success("You can't confirm the percel until it is delivered");
       }
     } catch (error) {
       console.log(error);
     }
   };
 
+  const handleViewHistory = (percel: IPercel) => {
+    setSelectedParcel(percel);
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSelectedParcel(null);
+  };
+
   return (
     <div className="overflow-x-auto">
-      {/* Search Bar */}
       <div className="mb-4 gap-x-4 flex justify-center items-center mt-4">
         <input
           type="text"
@@ -91,7 +102,6 @@ export default function ReceiverPercelTable() {
         />
       </div>
 
-      {/* Filters for status */}
       <div className="mb-4 flex items-center">
         <Select
           value={filter}
@@ -124,9 +134,9 @@ export default function ReceiverPercelTable() {
             <TableHead className="border border-gray-300">
               Tracking ID
             </TableHead>
-            <TableHead className="border border-gray-300">
+            {/* <TableHead className="border border-gray-300">
               Current Location
-            </TableHead>
+            </TableHead> */}
             <TableHead className="border border-gray-300">
               Pickup Address
             </TableHead>
@@ -136,17 +146,21 @@ export default function ReceiverPercelTable() {
             <TableHead className="border border-gray-300">
               Tracking Events
             </TableHead>
+            <TableHead className="border border-gray-300">
+              Confirm The percel
+            </TableHead>
+            <TableHead className="border border-gray-300">
+              view the history
+            </TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
           {getIncomeingPercel?.percelData?.map(
             (percel: IPercel, index: number) => {
-              // Get the last event's status
               const lastEventStatus = percel.trackingEvents.length
                 ? percel.trackingEvents[percel.trackingEvents.length - 1].status
                 : null;
 
-              // Only display the parcel if the last event status matches the filter
               if (filter && lastEventStatus !== filter && filter !== "all") {
                 return null;
               }
@@ -168,9 +182,9 @@ export default function ReceiverPercelTable() {
                   <TableCell className="border border-gray-300">
                     {percel.trackingId}
                   </TableCell>
-                  <TableCell className="border border-gray-300">
+                  {/* <TableCell className="border border-gray-300">
                     {percel.currentLocation}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell className="border border-gray-300">
                     {percel.pickupAddress}
                   </TableCell>
@@ -179,12 +193,14 @@ export default function ReceiverPercelTable() {
                   </TableCell>
 
                   <TableCell className="border border-gray-300">
-                    {/* Display the last event's status */}
                     {percel.trackingEvents.length
                       ? percel.trackingEvents
-                          .slice(-1) // Get the last event
+                          .slice(-1)
                           .map((event, eventIndex) => (
-                            <div key={eventIndex} className="mb-2">
+                            <div
+                              key={eventIndex}
+                              className="mb-2 flex flex-col-reverse gap-y-2"
+                            >
                               <Badge
                                 variant={
                                   event.status === "CANCELED"
@@ -200,14 +216,8 @@ export default function ReceiverPercelTable() {
                                 <strong>Status:</strong> {event.status}
                               </Badge>
                               <p>
-                                <strong>Location:</strong> {event.location}
-                              </p>
-                              <p>
-                                <strong>Note:</strong> {event.note}
-                              </p>
-                              <p>
-                                <strong>Time:</strong>{" "}
-                                {new Date(event.timestamp).toLocaleString()}
+                                <strong>current Location:</strong>{" "}
+                                {event.location}
                               </p>
                             </div>
                           ))
@@ -229,12 +239,25 @@ export default function ReceiverPercelTable() {
                     </Select>
                     <Button
                       onClick={() =>
-                        handleStatusChange(percel._id, lastEventStatus,percel.isConfirm)
+                        handleStatusChange(
+                          percel._id,
+                          lastEventStatus,
+                          percel.isConfirm
+                        )
                       }
                       className="mt-2 bg-chart-2"
                       disabled={!selectedStatus}
                     >
                       Update Status
+                    </Button>
+                  </TableCell>
+
+                  <TableCell className="border border-gray-300">
+                    <Button
+                      onClick={() => handleViewHistory(percel)}
+                      className="mt-2"
+                    >
+                      View Delivery History
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -243,12 +266,52 @@ export default function ReceiverPercelTable() {
           )}
         </TableBody>
       </Table>
+
       {/* Pagination */}
-      <PaginationFiLtering
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        senderAllPercels={getIncomeingPercel}
-      />
+      <div className="flex">
+        <div className="ml-auto">
+          <PaginationFiLtering
+            currentPage={currentPage}
+            setCurrentPage={setCurrentPage}
+            senderAllPercels={getIncomeingPercel}
+          />
+        </div>
+      </div>
+
+        {/* Modal for Delivery History */}
+      {isModalOpen && selectedParcel && (
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="flex items-center justify-between bg-white dark:bg-gray-900 relative p-4 rounded-md shadow-lg w-[70%] h-[80%]">
+         
+
+            {/* Parcel Tracking History Section */}
+            <div className="w-2/3 p-4 overflow-y-auto">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Tracking ID: <strong className="text-primary">{selectedParcel.trackingId}</strong></h3>
+              {selectedParcel.trackingEvents.map((event, index) => (
+                <PercelHistoryModal key={index} event={event} index={index} />
+              ))}
+            </div>
+
+               {/* User Details Section */}
+            <div className="flex flex-col items-start w-[50%] p-6 space-y-3  rounded-2xl">
+              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Receiver Details</h3>
+              <p><strong>Name:</strong> {data?.data?.name}</p>
+              <p><strong>Email:</strong> {data?.data?.email}</p>
+              <p><strong>Phone:</strong> {data?.data?.phone}</p>
+              <p><strong>Address:</strong> {data?.data?.address}</p>
+            </div>
+
+            {/* Close Button */}
+            <Button onClick={closeModal} className="absolute top-4 right-4  dark:bg-transparent dark:hover:bg-transparent cursor-pointer ">
+         
+               <CircleX size={34}/>
+          
+            </Button>
+          </div>
+         
+        </div>
+        
+      )}
     </div>
   );
 }

@@ -21,7 +21,7 @@ export default function PaginationFiLtering({
   currentPage,
 }: IProps) {
   const totalPage = senderAllPercels?.meta?.totalPage;
-  console.log(totalPage);
+
 
   const handleDecrement = (currentPage: number) => {
     if (currentPage > 1) {
@@ -36,7 +36,7 @@ export default function PaginationFiLtering({
 
   console.log();
   return (
-    <div>
+    <div className="">
       <Pagination>
         <PaginationContent>
           <PaginationItem>

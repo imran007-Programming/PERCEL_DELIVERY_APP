@@ -73,7 +73,7 @@ const router = createBrowserRouter([
     Component: withAuth(DashboardLayout,role.SENDER as Trole),
     path: "/sender",
     children: [
-      { element: <Navigate to="/sender/createPercel" /> },
+      {index:true, element: <Navigate to="/sender/createPercel" /> },
       ...genarateRoutes(senderSidebarItems),
     ],
   },

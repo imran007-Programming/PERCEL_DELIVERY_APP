@@ -55,13 +55,13 @@ export function LoginForm({
     };
     try {
       const result = await login(userInfo).unwrap();
-
+      
       const userRole = result?.data?.user?.role;
 
       if ( userRole === role.ADMIN) {
         navigate("/admin/analytics");
       } else if (userRole === role.SENDER) {
-        navigate("/sender");
+        navigate("/sender/createPercel");
       } else if (userRole === role.RECEIVER) {
         navigate("/receiver/getpercelinfo");
       } else {
@@ -76,6 +76,10 @@ export function LoginForm({
         toast.error("Your account is not verified.");
       } else if (err?.data?.message === "Invalid email and password") {
         setMessage("Invalid email and password");
+      }
+      else if(err?.data?.message === "Account was auto-created. Please complete registration first.") {
+        setMessage("Plz register before you login");
+        toast.error("Plz register before you login")
       }
     }
   };
@@ -187,7 +191,7 @@ export function LoginForm({
                 );
               }}
             />
-            <small className="text-primary"> {message}</small>
+            <small className="text-red-700"> {message}</small>
 
             <Button className="w-full rounded-none" type="submit">
               Submit

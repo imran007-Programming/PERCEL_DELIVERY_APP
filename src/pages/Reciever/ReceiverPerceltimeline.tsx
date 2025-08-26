@@ -6,7 +6,7 @@ type IProps={
 }
 
 export default function ReceiverPerceltimeline({getIncomeingPercel}:IProps) {
-    console.log(getIncomeingPercel)
+  
   return (
     <div>
       <ol className="relative space-y-8 before:absolute before:-ml-px before:h-full before:w-0.5 before:rounded-full before:bg-gray-200 dark:before:bg-gray-700">
