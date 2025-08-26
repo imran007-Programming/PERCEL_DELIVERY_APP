@@ -50,6 +50,7 @@ export default function ReceiverPercelTable() {
         page: currentPage,
       },
     });
+      const totalPage = getIncomeingPercel?.meta?.totalPage;
 
   if (isLoading || isLoadingPercels) {
     return (
@@ -73,7 +74,7 @@ export default function ReceiverPercelTable() {
           toast.success("percel confirmed successfully");
         }
       } else {
-        toast.success("You can't confirm the percel until it is delivered");
+        toast.error("You can't confirm the percel until it is delivered");
       }
     } catch (error) {
       console.log(error);
@@ -269,19 +270,19 @@ export default function ReceiverPercelTable() {
           <PaginationFiLtering
             currentPage={currentPage}
             setCurrentPage={setCurrentPage}
-            senderAllPercels={getIncomeingPercel}
+            totalPage={totalPage}
           />
         </div>
       </div>
 
         {/* Modal for Delivery History */}
       {isModalOpen && selectedParcel && (
-        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="flex items-center justify-between bg-white dark:bg-gray-900 relative p-4 rounded-md shadow-lg w-[70%] h-[80%]">
+        <div className=" fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
+          <div className="flex items-center justify-between bg-white dark:bg-gray-900 relative p-4 rounded-md shadow-lg w-[70%] ">
          
 
             {/* Parcel Tracking History Section */}
-            <div className="w-2/3 p-4 overflow-y-auto">
+            <div className="w-2/3 p-4 overflow-y-auto h-auto">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Tracking ID: <strong className="text-primary">{selectedParcel.trackingId}</strong></h3>
               {selectedParcel.trackingEvents.map((event, index:number) => (
                 <PercelHistoryModal key={index} event={event}  />

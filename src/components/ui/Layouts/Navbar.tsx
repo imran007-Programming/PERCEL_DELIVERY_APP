@@ -63,9 +63,10 @@ const Navbar = () => {
         <div className="hidden md:flex space-x-8">
           {menuItems.map((item, index) => (
             // Place the key here on the outer div to avoid key duplication errors
-            <div key={index}>
+            <>
               {item.role === "PUBLIC" && (
                 <motion.div
+                  key={index}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3, duration: 0.3 }}
@@ -75,6 +76,7 @@ const Navbar = () => {
               )}
               {item.role === data?.data?.role && (
                 <motion.div
+                key={index}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3, duration: 0.3 }}
@@ -82,7 +84,7 @@ const Navbar = () => {
                   <Link to={item.url}>{item.title}</Link>
                 </motion.div>
               )}
-            </div>
+            </>
           ))}
         </div>
 
@@ -171,22 +173,27 @@ const Navbar = () => {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.5 }}
         >
-          {menuItems.map((item) => (
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.3 }}
-            >
-              <Link to={item.url}>
-                <span
-                  className="block font-semibold text-black dark:text-white"
-                  onClick={() => setMobileMenuOpen(false)} // Close menu after item click
+          {menuItems.map((item, index) => (
+            <div key={index}>
+              {item.role === "PUBLIC" && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.3 }}
                 >
-                  {item.title}
-                </span>
-              </Link>
-            </motion.div>
+                  <Link to={item.url}>{item.title}</Link>
+                </motion.div>
+              )}
+              {item.role === data?.data?.role && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.3 }}
+                >
+                  <Link to={item.url}>{item.title}</Link>
+                </motion.div>
+              )}
+            </div>
           ))}
 
           <div className="space-y-4">

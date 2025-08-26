@@ -51,6 +51,14 @@ export const percelApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: ["PERCEL"],
     }),
+    deletePercelByAdmin: builder.mutation({
+      query: (percelId) => ({
+        url: `/percel/${percelId}`,
+        method: "DELETE",
+       
+      }),
+      invalidatesTags: ["PERCEL"],
+    }),
     
     cancelPercelStatusBySender: builder.mutation({
       query: ({ percelId, percelStatus }) => ({
@@ -78,5 +86,6 @@ export const {
   useCancelPercelStatusBySenderMutation,
   useGetPercelByReceiverQuery,
   usePercelConfirmationByReceiverMutation,
-  useGetPercelByAdminQuery
+  useGetPercelByAdminQuery,
+  useDeletePercelByAdminMutation
 } = percelApi;

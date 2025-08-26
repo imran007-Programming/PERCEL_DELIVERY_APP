@@ -8,6 +8,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import {
+  useDeletePercelByAdminMutation,
   useGetPercelByAdminQuery,
   useUpdatePercelStatusByAdminMutation,
 } from "@/components/Redux/Features/Percel/percel.api";
@@ -37,6 +38,7 @@ import { Input } from "@/components/ui/input";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import z from "zod";
+import { Trash2Icon } from "lucide-react";
 
 export default function PercelTable() {
   const [searchQuery, setSearchQuery] = useState("");
@@ -45,6 +47,9 @@ export default function PercelTable() {
   const [showModal, setShowModal] = useState(false);
   const [currentPercel, setCurrentPercel] = useState<IPercel | null>(null);
   const [changePercelStatus] = useUpdatePercelStatusByAdminMutation();
+  const [percelDelete] = useDeletePercelByAdminMutation();
+    const [showConfirmModal, setShowConfirmModal] = useState(false); // State to control modal visibility
+  const [currentPercelId, setCurrentPercelId] = useState<string | null>(null);
   // Fetch parcels data
   const { data: senderAllPercels, isLoading: isLoadingPercels } =
     useGetPercelByAdminQuery({
@@ -132,6 +137,34 @@ export default function PercelTable() {
     }
   }
 
+  /* Delete a percel */
+
+   const handleDeleteClick = (percelId: string) => {
+    setCurrentPercelId(percelId); 
+    setShowConfirmModal(true); 
+  };
+
+  const handleDelete = async () => {
+    console.log(currentPercelId)
+    if (currentPercelId) {
+      try {
+        const res = await percelDelete(currentPercelId).unwrap();
+        if (res?.success) {
+          toast.success("Parcel deleted successfully");
+          setShowConfirmModal(false);
+        }
+      } catch (error) {
+        toast.error("Failed to delete the parcel");
+        setShowConfirmModal(false); 
+        console.log(error)
+      }
+    }
+  };
+
+  const handleCancelDelete = () => {
+    setShowConfirmModal(false); // Close modal if the user clicks 'No'
+  };
+
   // If loading, show loader
   if (isLoadingPercels) {
     return <Loader />;
@@ -197,6 +230,7 @@ export default function PercelTable() {
               Tracking Events
             </TableHead>
             <TableHead className="border border-gray-300">Action</TableHead>
+            <TableHead className="border border-gray-300">Delete</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -276,6 +310,14 @@ export default function PercelTable() {
                       className="bg-chart-2"
                     >
                       Update Status
+                    </Button>
+                  </TableCell>
+                  <TableCell className="border border-gray-300">
+                    <Button
+                      onClick={() => handleDeleteClick(percel._id)}
+                      className="bg-chart-2"
+                    >
+                      <Trash2Icon />
                     </Button>
                   </TableCell>
                 </TableRow>
@@ -374,51 +416,24 @@ export default function PercelTable() {
                   <Button type="submit">Update Status</Button>
                 </form>
               </Form>
-
-              {/* <label className="block mb-2">Select Status:</label> */}
-
-              {/* <Select
-                value={selectedStatus}
-                onValueChange={(newStatus) => setSelectedStatus(newStatus)}
-              >
-                <SelectTrigger className="w-full">
-                  <SelectValue placeholder="Select Status" />
-                </SelectTrigger>
-                <SelectContent className="bg-white dark:bg-gray-800 border border-gray-300">
-                  <SelectItem value="PENDING">PENDING</SelectItem>
-                  <SelectItem value="CANCELED">CANCELED</SelectItem>
-                  <SelectItem value="PICKED">PICKED</SelectItem>
-                  <SelectItem value="IN_TRANSIT">IN_TRANSIT</SelectItem>
-                  <SelectItem value="DELIVERED">DELIVERED</SelectItem>
-                  <SelectItem value="RETURNED_REQUEST">
-                    RETURNED_REQUEST
-                  </SelectItem>
-                </SelectContent>
-              </Select> */}
             </div>
-
-            {/* <div className="mt-4 flex justify-end">
-              <Button onClick={() => setShowModal(false)} className="mr-2">
-                Close
-              </Button>
-              <Button
-                onClick={() => {
-                  if (currentPercel) {
-                    handleStatusChange(
-                      currentPercel._id,
-                      currentPercel.dispatchLocation
-                    );
-                    setShowModal(false);
-                  }
-                }}
-                className="bg-chart-2"
-              >
-                Update Status
-              </Button>
-            </div> */}
           </div>
         </div>
       )}
+
+      <div>
+              {showConfirmModal && (
+        <div className="fixed inset-0 flex items-center justify-center z-50 bg-black opacity-95">
+          <div className=" p-6  rounded border-5 shadow-lg max-w-md w-full">
+            <h2 className="text-xl text-center mb-4">Are you sure you want to delete this parcel?</h2>
+            <div className="flex justify-center space-x-4">
+              <Button onClick={handleDelete} className="bg-red-500 text-white">Yes</Button>
+              <Button onClick={handleCancelDelete} className="bg-gray-500 text-white">No</Button>
+            </div>
+          </div>
+        </div>
+      )}
+      </div>
     </div>
   );
 }

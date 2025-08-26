@@ -1,3 +1,6 @@
+import { useState } from "react";
+import { toast } from "sonner";
+import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -7,21 +10,21 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useGetAlluserQuery } from "@/components/Redux/Features/Auth/auth.api";
-import { Button } from "@/components/ui/button";
-import { useState } from "react";
-import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
-import Loader from "@/components/ui/Loader";
-
-import PaginationFiLtering from "@/util/Pagination/Pagination";
 import {
   Select,
   SelectItem,
   SelectTrigger,
   SelectValue,
+  SelectContent,
 } from "@/components/ui/select";
-import { SelectContent } from "@radix-ui/react-select";
+import {
+  useBlockUserMutation,
+  useGetAlluserQuery,
+  useUnBlockUserMutation,
+} from "@/components/Redux/Features/Auth/auth.api";
+import PaginationFiLtering from "@/util/Pagination/Pagination";
+import Loader from "@/components/ui/Loader";
 import type { IUser } from "@/types";
 
 export default function AlluserTable() {
@@ -29,14 +32,17 @@ export default function AlluserTable() {
   const [filter, setFilter] = useState("");
   const [statusRol, setStatusRol] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
+  const [selectedStatus, setSelectedStatus] = useState("");
+
   const { data, isLoading } = useGetAlluserQuery({
-    searchTerm:searchQuery,
+    searchTerm: searchQuery,
     page: currentPage,
-    isActive: filter === "all" ? undefined : filter||undefined,
-    role: statusRol === "all" ? undefined : statusRol||undefined,
-  
+    isActive: filter === "all" ? undefined : filter || undefined,
+    role: statusRol === "all" ? undefined : statusRol || undefined,
   });
-  
+  /* block user */
+  const [blockUser] = useBlockUserMutation();
+  const [unBlockUser] = useUnBlockUserMutation();
 
   const allUsers = data?.data?.userData;
   const totalPage = data?.data?.meta?.totalPage;
@@ -46,19 +52,28 @@ export default function AlluserTable() {
     return <Loader />;
   }
 
-//   // Handle filtering and displaying users based on selected filter
-//   const filteredUsers = allUsers?.filter((user: IUser) => {
-//     if (filter && user.isActive !== filter && filter !== "all") {
-//       return false;
-//     }
-//     if (
-//       searchQuery &&
-//       !user.name.toLowerCase().includes(searchQuery.toLowerCase())
-//     ) {
-//       return false;
-//     }
-//     return true;
-//   });
+  const handleAction = async (userId: string,currentStatus:string) => {
+    try {
+      if (selectedStatus === "BLOCKED") {
+        const res = await blockUser(userId).unwrap();
+        if (res.success) {
+          toast.success(`${res.message}`);
+        }
+      }
+       else if(selectedStatus ===currentStatus ){
+        toast.error(`user is already${currentStatus}`)
+       }
+
+      else if (selectedStatus === "ACTIVE") {
+        const res = await unBlockUser(userId).unwrap();
+        if (res.success) {
+          toast.success(`${res.message}`);
+        }
+      }
+    } catch (error: unknown) {
+      toast.error(`${error?.data?.message}`)
+    }
+  };
 
   return (
     <div className="overflow-x-auto">
@@ -73,43 +88,43 @@ export default function AlluserTable() {
         />
       </div>
 
-     <div className="flex items-center justify-between">
-         {/* Filters for status */}
-      <div className=" w-auto ">
-        <Select
-          value={filter}
-          onValueChange={(newStatus) => setFilter(newStatus)}
-        >
-          <SelectTrigger className="w-auto">
-            <SelectValue placeholder="Select Status" />
-          </SelectTrigger>
-          <SelectContent className="z-20 bg-white dark:bg-gray-800 border border-gray-300">
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="ACTIVE">ACTIVE</SelectItem>
-            <SelectItem value="BLOCKED">INACTIVE</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      {/* Filters for status */}
+      <div className="flex items-center justify-between mb-4">
+        {/* Status Filter */}
+        <div className="w-auto">
+          <Select
+            value={filter}
+            onValueChange={(newStatus) => setFilter(newStatus)}
+          >
+            <SelectTrigger className="w-auto">
+              <SelectValue placeholder="Select Status" />
+            </SelectTrigger>
+            <SelectContent className="z-20 bg-white dark:bg-gray-800 border border-gray-300">
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="ACTIVE">ACTIVE</SelectItem>
+              <SelectItem value="BLOCKED">INACTIVE</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
 
-      {/* Filters with Role */}
-
-      <div className=" w-auto ">
-        <Select
-          value={statusRol}
-          onValueChange={(role) => setStatusRol(role)}
-        >
-          <SelectTrigger className="w-auto">
-            <SelectValue placeholder="Select Role" />
-          </SelectTrigger>
-          <SelectContent className="z-20 bg-white dark:bg-gray-800 border border-gray-300">
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="ADMIN">ADMIN</SelectItem>
-            <SelectItem value="SENDER">SENDER</SelectItem>
-            <SelectItem value="RECEIVER">RECEIVER</SelectItem>
-          </SelectContent>
-        </Select>
+        {/* Role Filter */}
+        <div className="w-auto">
+          <Select
+            value={statusRol}
+            onValueChange={(role) => setStatusRol(role)}
+          >
+            <SelectTrigger className="w-auto">
+              <SelectValue placeholder="Select Role" />
+            </SelectTrigger>
+            <SelectContent className="z-20 bg-white dark:bg-gray-800 border border-gray-300">
+              <SelectItem value="all">All Roles</SelectItem>
+              <SelectItem value="ADMIN">ADMIN</SelectItem>
+              <SelectItem value="SENDER">SENDER</SelectItem>
+              <SelectItem value="RECEIVER">RECEIVER</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
-     </div>
 
       {/* Users Table */}
       <Table className="table-auto border-collapse border border-gray-300 mt-10">
@@ -148,14 +163,29 @@ export default function AlluserTable() {
                 {user.role}
               </TableCell>
               <TableCell className="border border-gray-300">
-                <Button
-                  onClick={() =>
-                    toast.success(`User ${user.name} actioned successfully!`)
-                  }
-                  className="bg-chart-2"
-                >
-                  Action
-                </Button>
+                {/* Add a dropdown to select status */}
+                <div className="flex flex-col items-center justify-center space-y-5">
+                  <Select
+                    value={selectedStatus}
+                    onValueChange={(value) => setSelectedStatus(value)}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Select Status" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white dark:bg-gray-800 border border-gray-300">
+                      <SelectItem value="ACTIVE">ACTIVE</SelectItem>
+                      <SelectItem value="BLOCKED">BLOCKED</SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <Button
+                    onClick={() => handleAction(user._id,user.isActive)}
+                    className="bg-primary w-full"
+                    disabled={!selectedStatus}
+                  >
+                    Action
+                  </Button>
+                </div>
+                {/* Action Button, disable if no status is selected */}
               </TableCell>
             </TableRow>
           ))}

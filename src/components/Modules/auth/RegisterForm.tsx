@@ -72,6 +72,8 @@ export function RegisterForm({
       role: data.role,
     };
 
+  
+
     try {
       await resgister(userInfo).unwrap();
 
@@ -317,7 +319,14 @@ export function RegisterForm({
               render={({ field }) => {
                 return (
                   <FormItem>
-                    <FormLabel>ShopName</FormLabel>
+                    <FormLabel
+                      className={cn(
+                        "rounded-none  transition-colors duration-200",
+                        UserRole === "RECEIVER" ? "hidden" : ""
+                      )}
+                    >
+                      ShopName
+                    </FormLabel>
                     <FormControl>
                       <Input
                         className={cn(

@@ -63,7 +63,7 @@ export function LoginForm({
       } else if (userRole === role.SENDER) {
         navigate("/sender/createPercel");
       } else if (userRole === role.RECEIVER) {
-        navigate("/receiver/getpercelinfo");
+        navigate("/receiver/dashboard");
       } else {
         toast.error("Invalid role or unauthorized access.");
         navigate("/unauthorized");
@@ -76,6 +76,10 @@ export function LoginForm({
         toast.error("Your account is not verified.");
       } else if (err?.data?.message === "Invalid email and password") {
         setMessage("Invalid email and password");
+      }
+      
+      else if(err?.data?.message === "user is blocked") {
+         toast.error("You are blocked by admin")
       }
       else if(err?.data?.message === "Account was auto-created. Please complete registration first.") {
         setMessage("Plz register before you login");
