@@ -15,7 +15,7 @@ import { role } from "@/Constant/role";
 const Navbar = () => {
   const [logout] = useLogoutMutation();
   const [isMobileMenuOpen, setMobileMenuOpen] = useState(false);
- const { data } = useUserInfoQuery(undefined);
+  const { data } = useUserInfoQuery(undefined);
 
   const dispatch = useDispatch();
   const handleLogout = async () => {
@@ -26,16 +26,14 @@ const Navbar = () => {
       console.log(error);
     }
   };
- 
- 
 
   const menuItems = [
-    { title: "Home", url: "/" , role: "PUBLIC"},
+    { title: "Home", url: "/", role: "PUBLIC" },
     { title: "About", url: "/about", role: "PUBLIC" },
     { title: "Contact", url: "/contact", role: "PUBLIC" },
-    { title: "Dashboard", url: "/admin",role:role.ADMIN },
-    { title: "Dashboard", url: "/sender",role:role.SENDER },
-    { title: "Dashboard", url: "/receiver",role:role.RECEIVER },
+    { title: "Dashboard", url: "/admin", role: role.ADMIN },
+    { title: "Dashboard", url: "/sender", role: role.SENDER },
+    { title: "Dashboard", url: "/receiver", role: role.RECEIVER },
   ];
 
   const handleMobileMenuToggle = () => {
@@ -63,35 +61,28 @@ const Navbar = () => {
 
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-8">
-          {menuItems.map((item) => (
-            <>
-            {
-              item.role==="PUBLIC" &&(
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.3 }}
-            >
-              <Link to={item.url}>{item.title}</Link>
-            </motion.div>
-          )}
-            {
-              item.role=== data?.data?.role &&(
-            <motion.div
-              key={item.title}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 0.3, duration: 0.3 }}
-            >
-              <Link to={item.url}>{item.title}</Link>
-            </motion.div>
-          )}
-        
-
-            
-            
-            </>
+          {menuItems.map((item, index) => (
+            // Place the key here on the outer div to avoid key duplication errors
+            <div key={index}>
+              {item.role === "PUBLIC" && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.3 }}
+                >
+                  <Link to={item.url}>{item.title}</Link>
+                </motion.div>
+              )}
+              {item.role === data?.data?.role && (
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  transition={{ delay: 0.3, duration: 0.3 }}
+                >
+                  <Link to={item.url}>{item.title}</Link>
+                </motion.div>
+              )}
+            </div>
           ))}
         </div>
 

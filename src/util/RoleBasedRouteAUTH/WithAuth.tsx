@@ -11,7 +11,7 @@ export const withAuth = (Component: ComponentType, requiredRole?: Trole) => {
     const { data, isLoading } = useUserInfoQuery(undefined);
 
     if(isLoading){
-      return <p><Loader/></p>
+      return <Loader/>
     }
 
 

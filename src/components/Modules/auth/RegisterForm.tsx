@@ -36,7 +36,16 @@ export function RegisterForm({
   const [resgister] = useRegisterMutation();
   const navigate = useNavigate();
 
-  const form = useForm({
+  const form = useForm<{
+    name: string;
+    email: string;
+    password: string;
+    confirmpassword: string;
+    phone: string;
+    address: string;
+    shopName: string;
+    role: "SENDER" | "RECEIVER";
+  }>({
     resolver: zodResolver(registerSchema),
     defaultValues: {
       name: "",
@@ -51,7 +60,6 @@ export function RegisterForm({
   });
 
   const UserRole = form.watch("role");
-  console.log(UserRole);
 
   const onSubmit = async (data: z.infer<typeof registerSchema>) => {
     const userInfo = {
@@ -63,10 +71,9 @@ export function RegisterForm({
       shopName: data?.role === "SENDER" ? data.shopName : "",
       role: data.role,
     };
-    console.log(userInfo);
 
     try {
-    await resgister(userInfo).unwrap();
+      await resgister(userInfo).unwrap();
 
       toast.success("User created successfully");
       navigate("/login");
@@ -315,7 +322,7 @@ export function RegisterForm({
                       <Input
                         className={cn(
                           "rounded-none border transition-colors duration-200",
-                          UserRole === "RECEIVER" ? "hidden" : "" 
+                          UserRole === "RECEIVER" ? "hidden" : ""
                         )}
                         placeholder="Shop Name"
                         {...field}
@@ -338,7 +345,13 @@ export function RegisterForm({
                 const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
                 const isValid = isMinLength && hasUpperCase && hasSpecialChar;
 
-                const Criterion = ({ passed, label }) => (
+                const Criterion = ({
+                  passed,
+                  label,
+                }: {
+                  passed: boolean;
+                  label: string;
+                }) => (
                   <div className="flex items-center gap-2 text-sm">
                     {passed ? (
                       <CheckCircle2 className="text-green-500" size={18} />

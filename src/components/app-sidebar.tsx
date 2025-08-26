@@ -39,34 +39,30 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
             </p>
           </div>
         </Link>
-        {/* <VersionSwitcher
-          versions={data.versions}
-          defaultVersion={data.versions[0]}
-        />
-        <SearchForm /> */}
+ 
       </SidebarHeader>
       <SidebarContent>
         {/* We create a SidebarGroup for each parent. */}
         {data.navMain.map((item) => (
-          <SidebarGroup key={item.title}>
+          <SidebarGroup  key={item.title}>
             <SidebarGroupLabel>{item.title}</SidebarGroupLabel>
             <SidebarGroupContent>
-              <SidebarMenu>
+              <SidebarMenu className="space-y-5 mt-5">
                 {item.items.map((item) => {
                   const isActive = location.pathname === item.url;
 
                   return (
                     // Add return statement here
                     <SidebarMenuItem
-                      className="flex justify-center items-center gap-x-5 gap-y-5" // Adjust the gap between icon and link
+                      className="flex ml-3 justify-center items-center gap-x-2" 
                       key={item.title}
                     >
-                      <item.icon color="red" />
+                     {item.icon &&  <item.icon color="red" />}
                       <SidebarMenuButton
-                        isActive={isActive}
+                      
                         asChild
                         className={cn(
-                          isActive && "bg-red-600",
+                          isActive && "bg-primary rounde-none  text-40",
                       
                          
                         )}

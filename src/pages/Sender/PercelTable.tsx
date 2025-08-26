@@ -25,7 +25,7 @@ import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import type { IError, IPercel } from "@/types";
 import Loader from "@/components/ui/Loader";
-import Pagination from "@/util/Pagination/Pagination";
+
 import PaginationFiLtering from "@/util/Pagination/Pagination";
 
 export default function PercelTable() {
@@ -35,7 +35,6 @@ export default function PercelTable() {
   const [filter, setFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
-  
   const senderId = data?.data?._id;
 
   const [cancelStatus] = useCancelPercelStatusBySenderMutation();
@@ -47,8 +46,8 @@ export default function PercelTable() {
       params: {
         searchTerm: searchQuery || undefined,
         status: filter === "all" ? undefined : filter || undefined,
-        limit:1,
-        page:currentPage,
+        limit: 2,
+        page: currentPage,
       },
     });
 
@@ -88,6 +87,7 @@ export default function PercelTable() {
       }
     }
   };
+  const totalPage = senderAllPercels?.meta?.totalPage;
 
   return (
     <div className="overflow-x-auto">
@@ -198,11 +198,6 @@ export default function PercelTable() {
                           .map((event, eventIndex) => (
                             <div key={eventIndex} className="mb-2">
                               <Badge
-                                variant={
-                                  event.status === "CANCELED"
-                                    ? "primary"
-                                    : "secondary"
-                                }
                                 className={
                                   event.status === "CANCELED"
                                     ? "bg-red-500 text-white"
@@ -257,7 +252,11 @@ export default function PercelTable() {
         </TableBody>
       </Table>
       {/* Pagination */}
-      <PaginationFiLtering currentPage={currentPage} setCurrentPage={setCurrentPage}  senderAllPercels={senderAllPercels} />
+      <PaginationFiLtering
+        currentPage={currentPage}
+        setCurrentPage={setCurrentPage}
+        totalPage={totalPage}
+      />
     </div>
   );
 }

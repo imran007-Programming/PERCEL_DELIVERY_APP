@@ -1,5 +1,8 @@
+import AlluserTable from "./AlluserTable";
+
 export default function AllUser() {
-  return (
-    <div>this is AllUser component</div>
-  );
+  
+  return <div className="p-5"
+  ><AlluserTable/>
+  </div>;
 }

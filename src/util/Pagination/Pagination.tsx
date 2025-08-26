@@ -1,26 +1,29 @@
 import {
   Pagination,
   PaginationContent,
-  PaginationEllipsis,
   PaginationItem,
   PaginationLink,
   PaginationNext,
   PaginationPrevious,
 } from "@/components/ui/pagination";
-import type { IPercel } from "@/types";
+
 
 type IProps = {
-  senderAllPercels: IPercel;
+
   setCurrentPage: (page: number) => void;
   currentPage: number;
+  totalPage:number
+  
 };
 
 export default function PaginationFiLtering({
-  senderAllPercels,
+ 
   setCurrentPage,
   currentPage,
+  totalPage
 }: IProps) {
-  const totalPage = senderAllPercels?.meta?.totalPage;
+ 
+
 
 
   const handleDecrement = (currentPage: number) => {
@@ -34,7 +37,7 @@ export default function PaginationFiLtering({
     }
   };
 
-  console.log();
+
   return (
     <div className="">
       <Pagination>

@@ -23,7 +23,7 @@ export const authApi = baseApi.injectEndpoints({
         url: "/user/logout",
         method: "POST",
       }),
-      // invalidatesTags: ["USER"],  
+      invalidatesTags: ["USER"],  
     }),
       userInfo: builder.query({
       query: () => ({
@@ -32,6 +32,17 @@ export const authApi = baseApi.injectEndpoints({
       }),
       providesTags: ["USER"],  
     }),
+      getAlluser: builder.query({
+      query: (params) => ({
+        url: "/user/getalluser",
+        method: "GET",
+        params
+      }),
+      providesTags: ["USER"],  
+    }),
+
+
+
   }),
 });
 
@@ -39,5 +50,6 @@ export const {
   useRegisterMutation,
   useLoginMutation,
   useLogoutMutation,
-  useUserInfoQuery
+  useUserInfoQuery,
+  useGetAlluserQuery
 } = authApi;

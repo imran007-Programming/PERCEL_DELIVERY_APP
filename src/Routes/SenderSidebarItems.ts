@@ -1,6 +1,6 @@
 import CreateAPercel from "@/pages/Sender/CreateAPercel";
 import type { ISidebarItems } from "@/types";
-import CheckStatus from "@/pages/Sender/GetAllPercel";
+import GetAllPercel from "@/pages/Sender/GetAllPercel";
 import { CopyCheck, Grid2x2 } from "lucide-react";
 
 export const senderSidebarItems: ISidebarItems[] = [
@@ -17,7 +17,7 @@ export const senderSidebarItems: ISidebarItems[] = [
       {
         title: "All Percel",
         url: "/sender/getallpercel",
-        component: CheckStatus,
+        component: GetAllPercel,
         icon:CopyCheck 
       },
     ],

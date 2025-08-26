@@ -27,6 +27,9 @@ export interface IPercel {
   pickupAddress: string;
   createdAt: string;
   updatedAt: string;
+  meta:{
+    totalPage:number
+  }
 }
 
 export interface Weight {
@@ -48,3 +51,19 @@ export interface IError {
 }
 
 export type Trole = "ADMIN" | "SENDER" | "RECEIVER" | "DELIVERY_AGENT";
+
+export interface IUser {
+  _id: string
+  name: string
+  email: string
+  role: string
+  phone: string
+  address: string
+  isDeleted: boolean
+  isActive: string
+  isVerified: boolean
+  auths: []
+  createdAt: string
+  updatedAt: string
+}
+

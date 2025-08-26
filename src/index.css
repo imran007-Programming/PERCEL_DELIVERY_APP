@@ -46,6 +46,7 @@ input {
 
 button {
   border-radius: 0 !important;
+  cursor: pointer;
 }
 textarea {
   border-radius: 0 !important;

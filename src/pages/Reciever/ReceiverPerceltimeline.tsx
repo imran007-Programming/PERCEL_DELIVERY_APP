@@ -1,11 +1,9 @@
-import type { IPercel } from "@/types";
 
 
-type IProps={
-    getIncomeingPercel:IPercel
-}
 
-export default function ReceiverPerceltimeline({getIncomeingPercel}:IProps) {
+
+
+export default function ReceiverPerceltimeline() {
   
   return (
     <div>

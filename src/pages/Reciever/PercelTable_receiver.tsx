@@ -27,7 +27,7 @@ import PaginationFiLtering from "@/util/Pagination/Pagination";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import PercelHistoryModal from "./PercelHistoryModal";
-import { CircleX, ClosedCaptionIcon, CroissantIcon, CrossIcon, LucideCross, X } from "lucide-react";
+import { CircleX} from "lucide-react";
 
 export default function ReceiverPercelTable() {
   const { data, isLoading } = useUserInfoQuery(undefined);
@@ -61,7 +61,7 @@ export default function ReceiverPercelTable() {
 
   const handleStatusChange = async (
     percelId: string,
-    lastStatus: string,
+    lastStatus: string|null,
     existConformation: boolean
   ) => {
     try {
@@ -202,11 +202,7 @@ export default function ReceiverPercelTable() {
                               className="mb-2 flex flex-col-reverse gap-y-2"
                             >
                               <Badge
-                                variant={
-                                  event.status === "CANCELED"
-                                    ? "primary"
-                                    : "secondary"
-                                }
+                                
                                 className={
                                   event.status === "CANCELED"
                                     ? "bg-red-500 text-white"
@@ -287,8 +283,8 @@ export default function ReceiverPercelTable() {
             {/* Parcel Tracking History Section */}
             <div className="w-2/3 p-4 overflow-y-auto">
               <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Tracking ID: <strong className="text-primary">{selectedParcel.trackingId}</strong></h3>
-              {selectedParcel.trackingEvents.map((event, index) => (
-                <PercelHistoryModal key={index} event={event} index={index} />
+              {selectedParcel.trackingEvents.map((event, index:number) => (
+                <PercelHistoryModal key={index} event={event}  />
               ))}
             </div>
 

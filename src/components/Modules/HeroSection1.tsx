@@ -1,4 +1,4 @@
-import { motion, useInView } from "framer-motion";
+import { motion } from "framer-motion";
 import { useRef, useState, useEffect } from "react";
 import vector2 from "../../assets/images/vector2.png";
 import vector3 from "../../assets/images/vector3.png";
