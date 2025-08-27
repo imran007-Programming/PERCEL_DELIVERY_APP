@@ -9,10 +9,10 @@ const HomePage = lazy(() => import("@/pages/HomePage"));
 const About = lazy(() => import("@/pages/About/About"));
 const Contact = lazy(() => import("@/pages/Contact/Contuct"));
 const Unauthorized = lazy(() => import("@/pages/Unauthorize/Unauthorize"));
+const NotFound = lazy(() => import("@/pages/NotFound/NotFound")); 
 
 const DashboardLayout = lazy(() => import("@/components/ui/Layouts/DashboardLayout"));
-
-// const RecieverPercelInfo = lazy(() => import("@/pages/Reciever/RecieverPercelInfo"));
+const TrackinPercel = lazy(() => import("@/pages/TrackinPercel/TrackinPercel"));
 
 import { genarateRoutes } from "@/util/GenarateRoutes/GenarateRoutes";
 import { adminSidebarItems } from "./AdminSidebarsItems";
@@ -45,6 +45,10 @@ const router = createBrowserRouter([
         path: "/unauthorized",
       },
       {
+        Component: TrackinPercel, 
+        path: "/track/:trackingId",
+      },
+      {
         Component: Login,
         path: "/login",
       },
@@ -52,6 +56,11 @@ const router = createBrowserRouter([
         Component: Register,
         path: "/register",
       },
+      {
+ 
+    Component: NotFound,
+    path: "*",
+  },
     ],
   },
   {
@@ -78,6 +87,7 @@ const router = createBrowserRouter([
       ...genarateRoutes(senderSidebarItems),
     ],
   },
+  
 ]);
 
 export default router;

@@ -8,7 +8,7 @@ export default function HomePage() {
  
   return (
     <div className=" space-y-20">
-     <div className="sm:mt-0 mt-30">
+     <div className="sm:mt-0 ">
        <HeroSection/>
      </div>
      <div>

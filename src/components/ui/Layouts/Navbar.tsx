@@ -197,22 +197,42 @@ const Navbar = () => {
           ))}
 
           <div className="space-y-4">
+           {/* Auth Buttons */}
+        <div className=" md:flex space-x-4">
+          {data?.data?.email && (
             <motion.button
-              className="block w-full px-4 py-2 bg-primary text-white rounded-md dark:bg-primary dark:text-white"
-              onClick={() => setMobileMenuOpen(false)} // Close menu after item click
+              className="px-4  py-2 bg-primary text-white rounded-md dark:bg-primary dark:text-white"
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              onClick={handleLogout}
+            >
+              Logout
+            </motion.button>
+          )}
+
+          {!data?.data?.email && (
+            <motion.button
+              className="px-4  py-2 bg-primary text-white rounded-md dark:bg-primary dark:text-white"
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
               <Link to="/login">Login</Link>
             </motion.button>
-            <button
-              className="block w-full px-4 py-2 rounded-md text-white bg-primary"
-              onClick={() => setMobileMenuOpen(false)} // Close menu after item click
-            >
-              <Link to="/register">Sign Up</Link>
-            </button>
-            <ModeToggle />
+          )}
+
+          <motion.button
+            className="px-4 py-2 border border-primary text-primary rounded-md dark:bg-primary dark:text-white dark:border-primary"
+            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.95 }}
+            transition={{ type: "spring", stiffness: 300 }}
+          >
+            <Link to="/register">Sign Up</Link>
+          </motion.button>
+          <ModeToggle />
+        </div>
+            
           </div>
         </motion.div>
       )}

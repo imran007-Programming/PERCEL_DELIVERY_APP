@@ -10,10 +10,10 @@ export default function CourierCharge() {
       <div>
         <Tabs className="space-y-10" defaultValue="tab-1">
          <TabsList className="grid sm:grid-cols-4 grid-cols-2 gap-y-6 sm:space-y-0 space-x-3 justify-center">
-  <TabsTrigger className="text-[18px]" value="tab-1">Same City Delivery</TabsTrigger>
-  <TabsTrigger className="text-[18px]" value="tab-2">Suburb Delivery</TabsTrigger>
-  <TabsTrigger className="text-[18px]" value="tab-3">Inner City Dhaka</TabsTrigger>
-  <TabsTrigger className="text-[18px]" value="tab-4">Outside Dhaka</TabsTrigger>
+  <TabsTrigger className="sm:text-[18px] text-md" value="tab-1">Same City Delivery</TabsTrigger>
+  <TabsTrigger className="sm:text-[18px] text-md" value="tab-2">Suburb Delivery</TabsTrigger>
+  <TabsTrigger className="sm:text-[18px] text-md" value="tab-3">Inner City Dhaka</TabsTrigger>
+  <TabsTrigger className="sm:text-[18px] text-md" value="tab-4">Outside Dhaka</TabsTrigger>
 </TabsList>
 
           {/* Tab 1 Content */}

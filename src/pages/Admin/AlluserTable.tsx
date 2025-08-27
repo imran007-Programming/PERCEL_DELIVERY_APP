@@ -70,7 +70,8 @@ export default function AlluserTable() {
           toast.success(`${res.message}`);
         }
       }
-    } catch (error: unknown) {
+    } catch (error:any) {
+      console.log(error)
       toast.error(`${error?.data?.message}`)
     }
   };
