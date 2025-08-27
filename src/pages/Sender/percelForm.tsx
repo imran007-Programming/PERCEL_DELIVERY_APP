@@ -98,6 +98,7 @@ const [createPercel]=useCreatePercelMutation()
      senderInfo: senderId,
     };
     const res= await createPercel(parceData).unwrap()
+    form.reset()
    if(res.success){
     toast.success("Percel created successfully",{id:toastId})
    }
