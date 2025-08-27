@@ -10,11 +10,12 @@ import {
   TimelineSeparator,
   TimelineTitle,
 } from "@/components/ui/timeline";
+
 import { BoxIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router";
 
-type IEvent = {
+export type IEvent = {
   status: string;
   curreentLocation: string;
   arrivedAt: string;

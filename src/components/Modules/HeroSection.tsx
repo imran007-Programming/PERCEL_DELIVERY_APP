@@ -2,23 +2,34 @@ import { ArrowRight, Crosshair } from "lucide-react";
 import { Button } from "../ui/button";
 import ImageLight from "../../assets/images/ChatGPT Image Aug 21, 2025, 04_58_51 PM.png";
 import { motion } from "framer-motion";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { useNavigate } from "react-router";
 
 export default function HeroSection() {
   const [trackingId, setTrackingId] = useState("");
   const navigate = useNavigate();
 
-  console.log(trackingId);
+  // Create a reference to the input section
+  const inputRef = useRef<HTMLDivElement>(null);
 
   const handleRedirect = () => {
     if (trackingId) {
-      navigate(`/track/${trackingId}`)
-    }
-    else if(!trackingId){
-      navigate('/track')
+      navigate(`/track/${trackingId}`);
+    } else if (!trackingId) {
+      navigate("/track");
     }
   };
+
+  // Scroll to the input field when the button is clicked
+  const scrollToInput = () => {
+    if (inputRef.current) {
+      inputRef.current.scrollIntoView({
+        behavior: "smooth",
+        block: "center", 
+      });
+    }
+  };
+
   return (
     <div>
       <section className="dark:bg-gray-900">
@@ -63,7 +74,10 @@ export default function HeroSection() {
                 whileTap={{ scale: 0.95 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <Button className="dark:text-white font-bold h-12 px-6 flex items-center gap-2">
+                <Button
+                  onClick={scrollToInput} // Scroll to the input field when clicked
+                  className="dark:text-white font-bold h-12 px-6 flex items-center gap-2"
+                >
                   Track Your Parcel <ArrowRight size={23} />
                 </Button>
               </motion.div>
@@ -84,50 +98,49 @@ export default function HeroSection() {
             />
           </motion.div>
         </div>
-
-        {/* Input Section with Button on the Right */}
-
-        <div className="sm:-mt-20 mt-0 flex  justify-center w-full">
-          <motion.div
-            className="rounded-lg border p-4 w-[100%] sm:w-[70%] lg:w-[70%] flex flex-col sm:flex-col lg:flex-row  items-center h-46 sm:h-30"
-            initial={{ opacity: 0, y: 50 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.3 }}
-          >
-            <div className="w-full text-center">
-              <h1 className="text-md font-bold sm:my-0 mb-4">
-                Track your Perrcel here by Tracking Id
-              </h1>
-            </div>
-            <div className="relative flex sm:justify-start justify-center w-full mb-4 sm:mb-4 lg:mb-0">
-              {/* Crosshair Icon inside input */}
-              <Crosshair className="absolute left-3   sm:left-7 top-1/2 transform -translate-y-1/2 text-gray-500 ml-auto" />
-
-              {/* Input Field */}
-              <input
-                onChange={(e) => setTrackingId(e.target.value)}
-                value={trackingId}
-                type="text"
-                placeholder="Track your parcel here"
-                className="sm:w-[100%] w-full pl-10 p-5 dark:text-gray-300 text-black rounded-md border focus:outline-none text-center ml-auto"
-              />
-                <Button
-                onClick={handleRedirect}
-                className="h-auto  hidden sm:w-30  w-full ml-auto sm:flex items-center gap-2"
-              >
-                Track Percel <ArrowRight size={23} />
-              </Button>
-            
-            </div>
-              <Button
-                onClick={handleRedirect}
-                className="h-auto sm:hidden sm:w-30  w-full ml-auto flex items-center gap-2"
-              >
-                Track Percel <ArrowRight size={23} />
-              </Button>
-          </motion.div>
-        </div>
       </section>
+
+      {/* Input Section with Button */}
+      <div ref={inputRef} className="flex justify-center w-full">
+        <motion.div
+          // Attach the ref to this section
+          className="rounded-lg border p-4 w-[100%] sm:w-[70%] lg:w-[70%] flex flex-col sm:flex-col lg:flex-row items-center h-46 sm:h-30"
+          initial={{ opacity: 0, y: 50 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.5, delay: 0.3 }}
+        >
+          <div className="w-full text-center">
+            <h1 className="text-md font-bold sm:my-0 mb-4">
+              Track your Parcel here by Tracking Id
+            </h1>
+          </div>
+          <div className="relative flex sm:justify-start justify-center w-full mb-4 sm:mb-4 lg:mb-0">
+            {/* Crosshair Icon inside input */}
+            <Crosshair className="absolute left-3 sm:left-7 top-1/2 transform -translate-y-1/2 text-gray-500 ml-auto" />
+
+            {/* Input Field */}
+            <input
+              onChange={(e) => setTrackingId(e.target.value)}
+              value={trackingId}
+              type="text"
+              placeholder="Track your parcel here"
+              className="sm:w-[100%] w-full pl-10 p-5 dark:text-gray-300 text-black rounded-md border focus:outline-none text-center ml-auto"
+            />
+            <Button
+              onClick={handleRedirect}
+              className="h-auto hidden sm:w-30 w-full ml-auto sm:flex items-center gap-2"
+            >
+              Track Parcel <ArrowRight size={23} />
+            </Button>
+          </div>
+          <Button
+            onClick={handleRedirect}
+            className="h-auto sm:hidden sm:w-30 w-full ml-auto flex items-center gap-2"
+          >
+            Track Parcel <ArrowRight size={23} />
+          </Button>
+        </motion.div>
+      </div>
     </div>
   );
 }

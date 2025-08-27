@@ -2,6 +2,8 @@ import { Bar, Pie } from "react-chartjs-2";
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement } from "chart.js";
 import { useGetPercelByAdminQuery } from "@/components/Redux/Features/Percel/percel.api";
 
+import type { IPercel } from "@/types";
+
 // Register chart.js components
 ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend, ArcElement);
 
@@ -21,7 +23,7 @@ const Analytics = () => {
   }
 
   // Flatten all statuses from trackingEvents array
-  const allStatuses = totalParcels?.map((item) =>
+  const allStatuses = totalParcels?.map((item:IPercel) =>
     item.trackingEvents?.map((event) => event.status) // Extracting statuses from each event
   ).flat(); // Flattening the array
 
@@ -31,7 +33,7 @@ const Analytics = () => {
   }
 
   // Count parcel statuses
-  const parcelStatusData = allStatuses?.reduce((acc, status) => {
+  const parcelStatusData = allStatuses?.reduce((acc:any, status:string) => {
     acc[status] = (acc[status] || 0) + 1;
     return acc;
   }, {});
