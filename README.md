@@ -88,32 +88,29 @@ In the project directory, you can run the following commands:
 - `npm run preview` or `yarn preview`: Previews the production build locally after running `npm run build`.
 
 ## Folder Structure
-
-Here’s a brief overview of the project folder structure:
 /src
-  /assets                # Static files like images, icons, etc.
-    /images              # Folder for image assets
-    /icons               # Folder for icons
-  /components            # Reusable UI components (e.g., Button, Card)
-    Button.tsx           # Button component
-    Card.tsx             # Card component
-  /pages                 # Page components (e.g., Home, Dashboard, Admin)
-    Home.tsx             # Home page component
-    Dashboard.tsx        # Dashboard page component
-    Admin.tsx            # Admin page component
-  /services              # API calls and services (e.g., user authentication, parcel creation)
-    api.ts               # API services for user authentication
-    parcelService.ts     # API services for parcel management
-  /styles                # Global styles and theming
-    globalStyles.css     # Global styles
-    theme.ts             # Theme configurations (e.g., colors, fonts)
-  /types                 # TypeScript types for Parcel, User, and other entities
-    parcelTypes.ts       # Types for parcels
-    userTypes.ts         # Types for users
-  App.tsx                # Main React component
-  index.tsx              # Entry point of the app
-  vite-env.d.ts          # TypeScript definitions for Vite environment variables
+  ├── /assets                # Static files like images, icons, etc.
+  │    ├── /images            # Folder for image assets
+  │    └── /icons             # Folder for icons
+  ├── /components            # Reusable UI components (e.g., Button, Card)
+  │    ├── Button.tsx         # Button component
+  │    └── Card.tsx           # Card component
+  ├── /pages                 # Page components (e.g., Home, Dashboard, Admin)
+  │    ├── Home.tsx           # Home page component
+  │    ├── Dashboard.tsx      # Dashboard page component
+  │    └── Admin.tsx          # Admin page component
+  ├── /services              # API calls and services (e.g., user authentication, parcel creation)
+  │    ├── api.ts             # API services for user authentication
+  │    └── parcelService.ts   # API services for parcel management
+  ├── /styles                # Global styles and theming
+  │    ├── globalStyles.css   # Global styles
+  │    └── theme.ts           # Theme configurations (e.g., colors, fonts)
+  ├── /types                 # TypeScript types for Parcel, User, and other entities
+  │    ├── parcelTypes.ts     # Types for parcels
+  │    └── userTypes.ts       # Types for users
+  ├── App.tsx                # Main React component
+  ├── index.tsx              # Entry point of the app
+  └── vite-env.d.ts          # TypeScript definitions for Vite environment variables
 
 /public
-  index.html             # Main HTML file that loads the app
-
+  └── index.html             # Main HTML file that loads the app
