@@ -17,8 +17,9 @@ createRoot(document.getElementById("root")!).render(
         <Toaster theme="system" richColors />
         <Suspense fallback={<Loader />}>
          
-          <RouterProvider router={router} />
+          
         </Suspense>
+        <RouterProvider router={router} />
       </ThemeProvider>
     </Provider>
   </StrictMode>
