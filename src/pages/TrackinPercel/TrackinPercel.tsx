@@ -55,6 +55,7 @@ export default function TrackinPercel() {
   }
 
   const { reciverInfo, trackingEvents } = trackPercel.data;
+  console.log(reciverInfo)
 
   // Reverse the trackingEvents array to show timeline in reverse order
   const reversedTrackingEvents = [...trackingEvents].reverse();
@@ -93,16 +94,16 @@ export default function TrackinPercel() {
       <div className="flex sm:mt-0 mt-20 ml-4 flex-col items-end">
         <div className="text-foreground">
           <p>
-            <strong>Receiver_Name:</strong> {reciverInfo.name}
+            <strong>Receiver_Name:</strong> {reciverInfo?.name}
           </p>
           <p>
-            <strong>Receiver_Email:</strong> {reciverInfo.email}
+            <strong>Receiver_Email:</strong> {reciverInfo?.email}
           </p>
           <p>
-            <strong>Receiver_Phone:</strong> {reciverInfo.phone}
+            <strong>Receiver_Phone:</strong> {reciverInfo?.phone}
           </p>
           <p>
-            <strong>Receiver_Address:</strong> {reciverInfo.address}
+            <strong>Receiver_Address:</strong> {reciverInfo?.address}
           </p>
         </div>
       </div>
