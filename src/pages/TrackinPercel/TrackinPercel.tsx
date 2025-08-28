@@ -67,7 +67,7 @@ export default function TrackinPercel() {
         {reversedTrackingEvents.map((event: IEvent, index: number) => (
           <TimelineItem
             key={index}
-            step={index + 1}
+            step={index}
             className="group-data-[orientation=vertical]/timeline:sm:ms-32 "
           >
             <TimelineHeader className="flex justify-between items-center">

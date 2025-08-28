@@ -27,7 +27,7 @@ import PaginationFiLtering from "@/util/Pagination/Pagination";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import PercelHistoryModal from "./PercelHistoryModal";
-import { CircleX} from "lucide-react";
+import { CircleX } from "lucide-react";
 
 export default function ReceiverPercelTable() {
   const { data, isLoading } = useUserInfoQuery(undefined);
@@ -50,7 +50,7 @@ export default function ReceiverPercelTable() {
         page: currentPage,
       },
     });
-      const totalPage = getIncomeingPercel?.meta?.totalPage;
+  const totalPage = getIncomeingPercel?.meta?.totalPage;
 
   if (isLoading || isLoadingPercels) {
     return (
@@ -62,7 +62,7 @@ export default function ReceiverPercelTable() {
 
   const handleStatusChange = async (
     percelId: string,
-    lastStatus: string|null,
+    lastStatus: string | null,
     existConformation: boolean
   ) => {
     try {
@@ -203,7 +203,6 @@ export default function ReceiverPercelTable() {
                               className="mb-2 flex flex-col-reverse gap-y-2"
                             >
                               <Badge
-                                
                                 className={
                                   event.status === "CANCELED"
                                     ? "bg-red-500 text-white"
@@ -275,39 +274,61 @@ export default function ReceiverPercelTable() {
         </div>
       </div>
 
-        {/* Modal for Delivery History */}
+      {/* Modal for Delivery History */}
       {isModalOpen && selectedParcel && (
-        <div className=" fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50">
-          <div className="flex items-center justify-between bg-white dark:bg-gray-900 relative p-4 rounded-md shadow-lg w-[70%] ">
-         
+        <div className="fixed inset-0 bg-gray-500 bg-opacity-50 flex items-center justify-center z-50 p-4 ">
+          
+          <div className="bg-white h-[600px] dark:bg-gray-900 relative rounded-md shadow-lg w-full max-w-5xl  overflow-y-auto hide-scrollbar">
+            {/* Main content */}
+          
+            <div className="flex justify-evenly items-center flex-col md:flex-row p-7">
+              {/* Timeline */}
+              <div className="w-full md:w-2/3 sm:w-6 ">
+                 <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Parcel Delivery History</h2>
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+                  Tracking ID:{" "}
+                  <strong className="text-primary">
+                    {selectedParcel.trackingId}
+                  </strong>
+                </h3>
+                 
+                {selectedParcel.trackingEvents.map((event, index: number) => (
+                  <PercelHistoryModal key={index} event={event} />
+                ))}
+              </div>
 
-            {/* Parcel Tracking History Section */}
-            <div className="w-2/3 p-4 overflow-y-auto h-auto">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Tracking ID: <strong className="text-primary">{selectedParcel.trackingId}</strong></h3>
-              {selectedParcel.trackingEvents.map((event, index:number) => (
-                <PercelHistoryModal key={index} event={event}  />
-              ))}
-            </div>
-
-               {/* User Details Section */}
-            <div className="flex flex-col items-start w-[50%] p-6 space-y-3  rounded-2xl">
-              <h3 className="text-xl font-semibold text-gray-900 dark:text-white">Receiver Details</h3>
-              <p><strong>Name:</strong> {data?.data?.name}</p>
-              <p><strong>Email:</strong> {data?.data?.email}</p>
-              <p><strong>Phone:</strong> {data?.data?.phone}</p>
-              <p><strong>Address:</strong> {data?.data?.address}</p>
+              {/* Receiver Info */}
+              <div className=" w-full md:w-1/3 flex flex-col p-6 space-y-3  border-gray-200 dark:border-gray-700">
+                <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+                  Receiver Details
+                </h3>
+                <p>
+                  <strong>Name:</strong> {data?.data?.name}
+                </p>
+                <p>
+                  <strong>Email:</strong> {data?.data?.email}
+                </p>
+                <p>
+                  <strong>Phone:</strong> {data?.data?.phone}
+                </p>
+                <p>
+                  <strong>Address:</strong> {data?.data?.address}
+                </p>
+              </div>
             </div>
 
             {/* Close Button */}
-            <Button onClick={closeModal} className="absolute top-4 right-4  dark:bg-transparent dark:hover:bg-transparent cursor-pointer ">
-         
-               <CircleX size={34}/>
-          
-            </Button>
+            {/* <Button
+              onClick={closeModal}
+              className="absolute top-4 right-4 dark:bg-transparent dark:hover:bg-transparent cursor-pointer"
+            >
+            
+            </Button> */}
+              <CircleX 
+                 onClick={closeModal}
+              className="absolute top-4 right-4 dark:bg-transparent dark:hover:bg-transparent cursor-pointer" size={26} />
           </div>
-         
         </div>
-        
       )}
     </div>
   );

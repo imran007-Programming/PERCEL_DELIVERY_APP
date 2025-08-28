@@ -26,9 +26,9 @@ export default function PercelHistoryModal({ event }: Iprops) {
   const statusColorClass = statusColorMap[event.status] || "bg-gray-500 text-white";
 
   return (
-    <div className="max-w-2xl mx-auto mt-4 p-4 ">
-      <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">Parcel Delivery History</h2>
-      <ol className="relative space-y-8 before:absolute before:-ml-px before:h-full before:w-0.5 before:rounded-full before:bg-gray-200 dark:before:bg-gray-700">
+    <div className="max-w-2xl mx-auto mt-4 p-4">
+    
+      <ol className="relative space-y-8 before:absolute before:-ml-px before:h-50 before:w-0.5 before:rounded-full before:bg-gray-200 dark:before:bg-gray-700">
          
         <li className="relative -ms-1.5 flex items-start gap-4">
           {/* Circle indicator for each event */}
