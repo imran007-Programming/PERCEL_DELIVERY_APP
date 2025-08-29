@@ -76,7 +76,7 @@ const Navbar = () => {
               )}
               {item.role === data?.data?.role && (
                 <motion.div
-                key={index}
+                  key={index}
                   initial={{ opacity: 0 }}
                   animate={{ opacity: 1 }}
                   transition={{ delay: 0.3, duration: 0.3 }}
@@ -104,23 +104,32 @@ const Navbar = () => {
 
           {!data?.data?.email && (
             <motion.button
-              
               whileHover={{ scale: 1.05 }}
               whileTap={{ scale: 0.95 }}
               transition={{ type: "spring", stiffness: 300 }}
             >
-              <Link className="px-4  py-2 bg-primary text-white dark:bg-primary dark:text-white" to="/login">Login</Link>
+              <Link
+                className="px-4  py-2 bg-primary text-white dark:bg-primary dark:text-white"
+                to="/login"
+              >
+                Login
+              </Link>
             </motion.button>
           )}
-
-          <motion.button
-           
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <Link  className="px-4 py-2 border border-primary text-primary  dark:bg-primary dark:text-white dark:border-primary" to="/register">Sign Up</Link>
-          </motion.button>
+          {data?.data?.email && (
+            <motion.button
+              whileHover={{ scale: 1.05 }}
+              whileTap={{ scale: 0.95 }}
+              transition={{ type: "spring", stiffness: 300 }}
+            >
+              <Link
+                className="px-4 py-2 border border-primary text-primary  dark:bg-primary dark:text-white dark:border-primary"
+                to="/register"
+              >
+                Sign Up
+              </Link>
+            </motion.button>
+          )}
           <ModeToggle />
         </div>
 
@@ -139,8 +148,8 @@ const Navbar = () => {
               className="w-6 h-0.5 bg-gray-700 mb-1"
               initial={{ rotate: 0 }}
               animate={{
-                rotate: isMobileMenuOpen ?40 : 0,
-                translateY: isMobileMenuOpen ? 7 : 0, 
+                rotate: isMobileMenuOpen ? 40 : 0,
+                translateY: isMobileMenuOpen ? 7 : 0,
                 transition: { duration: 0.7 },
               }}
             />
@@ -148,7 +157,7 @@ const Navbar = () => {
               className="w-6 h-0.5 bg-gray-700 mb-1"
               initial={{ rotate: 0 }}
               animate={{
-                opacity: isMobileMenuOpen ? 0 : 1, 
+                opacity: isMobileMenuOpen ? 0 : 1,
                 transition: { duration: 0.3 },
               }}
             />
@@ -157,7 +166,7 @@ const Navbar = () => {
               initial={{ rotate: 0 }}
               animate={{
                 rotate: isMobileMenuOpen ? -45 : 0,
-                translateY: isMobileMenuOpen ? -4 : 0, 
+                translateY: isMobileMenuOpen ? -4 : 0,
                 transition: { duration: 0.3 },
               }}
             />
@@ -197,42 +206,49 @@ const Navbar = () => {
           ))}
 
           <div className="space-y-4">
-           {/* Auth Buttons */}
-        <div className=" md:flex space-x-4">
-          {data?.data?.email && (
-            <motion.button
-              className="px-4  py-2 bg-primary text-white rounded-md dark:bg-primary dark:text-white"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 300 }}
-              onClick={handleLogout}
-            >
-              Logout
-            </motion.button>
-          )}
+            {/* Auth Buttons */}
+            <div className=" md:flex space-x-4">
+              {data?.data?.email && (
+                <motion.button
+                  className="px-4  py-2 bg-primary text-white rounded-md dark:bg-primary dark:text-white"
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                  onClick={handleLogout}
+                >
+                  Logout
+                </motion.button>
+              )}
 
-          {!data?.data?.email && (
-            <motion.button
-              
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              transition={{ type: "spring", stiffness: 300 }}
-            >
-              <Link className="px-4  py-2 bg-primary text-white rounded-md dark:bg-primary dark:text-white" to="/login">Login</Link>
-            </motion.button>
-          )}
+              {!data?.data?.email && (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 300 }}
+                >
+                  <Link
+                    className="px-4  py-2 bg-primary text-white rounded-md dark:bg-primary dark:text-white"
+                    to="/login"
+                  >
+                    Login
+                  </Link>
+                </motion.button>
+              )}
 
-          <motion.button
-            
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            transition={{ type: "spring", stiffness: 300 }}
-          >
-            <Link className="px-4 py-2 border border-primary text-primary rounded-md dark:bg-primary dark:text-white dark:border-primary" to="/register">Sign Up</Link>
-          </motion.button>
-          <ModeToggle />
-        </div>
-            
+             {data?.data?.email && <motion.button
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.95 }}
+                transition={{ type: "spring", stiffness: 300 }}
+              >
+                <Link
+                  className="px-4 py-2 border border-primary text-primary rounded-md dark:bg-primary dark:text-white dark:border-primary"
+                  to="/register"
+                >
+                  Sign Up
+                </Link>
+              </motion.button>}
+              <ModeToggle />
+            </div>
           </div>
         </motion.div>
       )}

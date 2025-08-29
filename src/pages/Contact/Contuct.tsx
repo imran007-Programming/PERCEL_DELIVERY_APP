@@ -26,14 +26,14 @@ export default function Contact() {
     },
   });
 
-  function onSubmit(data: {
-    username: string;
-    address: string;
-    mobilenumber: string;
-    message: string;
-  }) {
+  // function onSubmit(data: {
+  //   username: string;
+  //   address: string;
+  //   mobilenumber: string;
+  //   message: string;
+  // }) {
 
-  }
+  // }
 
   return (
     <div className="container mx-auto">
@@ -56,7 +56,10 @@ export default function Contact() {
           <h2>Send your message</h2>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            <form 
+            // onSubmit={form.handleSubmit(onSubmit)}
+            
+            className="space-y-6">
               {/* Username Field */}
               <FormField
                 control={form.control}
