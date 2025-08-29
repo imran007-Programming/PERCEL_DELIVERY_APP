@@ -32,7 +32,7 @@ export default function Contact() {
     mobilenumber: string;
     message: string;
   }) {
-    console.log(data);
+
   }
 
   return (

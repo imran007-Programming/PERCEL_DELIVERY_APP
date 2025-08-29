@@ -34,7 +34,7 @@ export default function AlluserTable() {
   const [currentPage, setCurrentPage] = useState(1);
   const [selectedStatus, setSelectedStatus] = useState("");
 
-  const { data, isLoading } = useGetAlluserQuery({
+  const { data,isFetching} = useGetAlluserQuery({
     searchTerm: searchQuery,
     page: currentPage,
     isActive: filter === "all" ? undefined : filter || undefined,
@@ -48,10 +48,9 @@ export default function AlluserTable() {
   const totalPage = data?.data?.meta?.totalPage;
 
   // If loading users loading indicator
-  if (isLoading) {
-    return <Loader />;
-  }
-
+  if (isFetching) {
+      return <Loader />;
+    }
   const handleAction = async (userId: string,currentStatus:string) => {
     try {
       if (selectedStatus === "BLOCKED") {

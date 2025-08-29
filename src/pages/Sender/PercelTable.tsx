@@ -29,7 +29,7 @@ import Loader from "@/components/ui/Loader";
 import PaginationFiLtering from "@/util/Pagination/Pagination";
 
 export default function PercelTable() {
-  const { data, isLoading } = useUserInfoQuery(undefined);
+  const { data, isFetching } = useUserInfoQuery(undefined);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("");
@@ -40,7 +40,7 @@ export default function PercelTable() {
   const [cancelStatus] = useCancelPercelStatusBySenderMutation();
 
   // Fetch sender's parcels using the senderId, search query, and filter
-  const { data: senderAllPercels, isLoading: isLoadingPercels } =
+  const { data: senderAllPercels, isFetching: isFetchingPercels } =
     useGetPercelBySenderQuery({
       senderId,
       params: {
@@ -52,11 +52,11 @@ export default function PercelTable() {
     });
 
   // If loading parcels or error occurred, display loading/error messages
-  if (isLoading || isLoadingPercels) {
+  if (isFetching || isFetchingPercels) {
     return (
-      <div>
+    
         <Loader />
-      </div>
+   
     );
   }
 

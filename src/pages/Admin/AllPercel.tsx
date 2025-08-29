@@ -48,16 +48,18 @@ export default function PercelTable() {
   const [currentPercel, setCurrentPercel] = useState<IPercel | null>(null);
   const [changePercelStatus] = useUpdatePercelStatusByAdminMutation();
   const [percelDelete] = useDeletePercelByAdminMutation();
-    const [showConfirmModal, setShowConfirmModal] = useState(false); // State to control modal visibility
+    const [showConfirmModal, setShowConfirmModal] = useState(false); 
   const [currentPercelId, setCurrentPercelId] = useState<string | null>(null);
   // Fetch parcels data
-  const { data: senderAllPercels, isLoading: isLoadingPercels } =
+  const { data: senderAllPercels,isFetching } =
     useGetPercelByAdminQuery({
       searchTerm: searchQuery || undefined,
       status: filter === "all" ? undefined : filter || undefined,
       limit: 2,
       page: currentPage,
     });
+
+    
 
   const totalPage = senderAllPercels?.meta?.totalPage;
 
@@ -145,7 +147,7 @@ export default function PercelTable() {
   };
 
   const handleDelete = async () => {
-    console.log(currentPercelId)
+   
     if (currentPercelId) {
       try {
         const res = await percelDelete(currentPercelId).unwrap();
@@ -166,7 +168,7 @@ export default function PercelTable() {
   };
 
   // If loading, show loader
-  if (isLoadingPercels) {
+  if (isFetching) {
     return <Loader />;
   }
 

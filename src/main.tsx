@@ -1,4 +1,4 @@
-import { StrictMode, Suspense } from "react";
+import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import { RouterProvider } from "react-router"; // If using react-router-dom v6+
@@ -7,7 +7,7 @@ import { ThemeProvider } from "./components/Providers/ThemeProvider";
 import { Provider } from "react-redux";
 import { store } from "./components/Redux/store";
 import { Toaster } from "sonner";
-import Loader from "./components/ui/Loader";
+
 
 
 createRoot(document.getElementById("root")!).render(
@@ -15,10 +15,7 @@ createRoot(document.getElementById("root")!).render(
     <Provider store={store}>
       <ThemeProvider defaultTheme="system">
         <Toaster theme="system" richColors />
-        <Suspense fallback={<Loader />}>
-         
-          
-        </Suspense>
+       
         <RouterProvider router={router} />
       </ThemeProvider>
     </Provider>

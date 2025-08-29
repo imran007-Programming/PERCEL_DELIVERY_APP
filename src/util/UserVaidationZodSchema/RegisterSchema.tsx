@@ -16,11 +16,11 @@ export const registerSchema = z
         message: "Email must contain @",
       }),
     phone: z
-      .string()
-      .min(11, { message: "Phone must be exactly 11 digits" })
-      .regex(/^[0-9]{11}$/, {
-        message: "Phone must be 11 digits and contain only numbers",
-      }),
+    .string()
+    .regex(
+      /^(?:\+88)?01[3-9]\d{8}$/,
+      "Phone number must be a valid Bangladeshi mobile number (e.g., 017XXXXXXXX or +88017XXXXXXXX)"
+    ),
     address: z
       .string()
       .min(8, { message: "Address must be at least 8 characters long" }),

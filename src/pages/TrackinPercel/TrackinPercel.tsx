@@ -28,10 +28,10 @@ export default function TrackinPercel() {
   const [percelTrackingId, setPerTrackingId] = useState("");
   const {
     data: trackPercel,
-    isLoading,
+    isFetching,
     isError,
   } = useTrackThePercelQuery(percelTrackingId);
-  console.log(trackPercel);
+ 
 
   // Set the tracking ID when the param changes
   useEffect(() => {
@@ -50,12 +50,12 @@ export default function TrackinPercel() {
   }
 
   // If tracking data is not available, show loading
-  if (isLoading) {
+  if (isFetching) {
     return <Loader />;
   }
 
   const { reciverInfo, trackingEvents } = trackPercel.data;
-  console.log(reciverInfo)
+
 
   // Reverse the trackingEvents array to show timeline in reverse order
   const reversedTrackingEvents = [...trackingEvents].reverse();

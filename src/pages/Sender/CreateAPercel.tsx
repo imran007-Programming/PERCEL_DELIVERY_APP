@@ -2,9 +2,9 @@ import { useUserInfoQuery } from "@/components/Redux/Features/Auth/auth.api";
 import { PercelForm } from "./percelForm";
 
 export default function CreateAPercel() {
-  const { data, isLoading, error } = useUserInfoQuery(undefined);
+  const { data, error,isFetching } = useUserInfoQuery(undefined);
 
-  if (isLoading) {
+  if (isFetching) {
     return <div>Loading...</div>;
   }
 

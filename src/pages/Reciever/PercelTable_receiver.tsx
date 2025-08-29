@@ -30,7 +30,7 @@ import PercelHistoryModal from "./PercelHistoryModal";
 import { CircleX } from "lucide-react";
 
 export default function ReceiverPercelTable() {
-  const { data, isLoading } = useUserInfoQuery(undefined);
+  const { data, isFetching:userFetch } = useUserInfoQuery(undefined);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("");
@@ -40,7 +40,7 @@ export default function ReceiverPercelTable() {
   const [isModalOpen, setIsModalOpen] = useState(false); // State to manage modal visibility
   const receiverId = data?.data?._id;
 
-  const { data: getIncomeingPercel, isLoading: isLoadingPercels } =
+  const { data: getIncomeingPercel, isFetching: percelFetch } =
     useGetPercelByReceiverQuery({
       receiverId,
       params: {
@@ -52,11 +52,11 @@ export default function ReceiverPercelTable() {
     });
   const totalPage = getIncomeingPercel?.meta?.totalPage;
 
-  if (isLoading || isLoadingPercels) {
+  if (percelFetch || userFetch) {
     return (
-      <div>
+      
         <Loader />
-      </div>
+      
     );
   }
 

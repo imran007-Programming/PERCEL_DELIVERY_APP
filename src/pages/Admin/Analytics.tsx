@@ -24,9 +24,9 @@ ChartJS.register(
 );
 
 const Analytics = () => {
-  const { data: percels, isLoading } = useGetPercelByAdminQuery(undefined);
+  const { data: percels, isFetching } = useGetPercelByAdminQuery(undefined);
 
-  if (isLoading) return <Loader/>;
+  if (isFetching) return <Loader/>;
 
   const totalParcels = percels?.percelData;
 

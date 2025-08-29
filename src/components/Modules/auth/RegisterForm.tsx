@@ -80,7 +80,7 @@ export function RegisterForm({
       toast.success("User created successfully");
       navigate("/login");
     } catch (error) {
-      console.log("hellow");
+   
       const err = error as { data?: { message?: string } };
       if (err?.data?.message === "user already Exist please log in") {
         toast.error("User Already Exist,plz log in");

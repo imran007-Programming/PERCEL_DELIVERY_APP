@@ -8,12 +8,11 @@ import { Navigate } from "react-router";
 
 export const withAuth = (Component: ComponentType, requiredRole?: Trole) => {
   return function AuthWrapper() {
-    const { data, isLoading } = useUserInfoQuery(undefined);
+    const { data, isFetching } = useUserInfoQuery(undefined);
 
-    if(isLoading){
-      return <Loader/>
+    if (isFetching) {
+      return <Loader />;
     }
-
 
     if (!data?.data?.email) {
       return <Navigate to="/login" replace />;
