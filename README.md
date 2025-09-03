@@ -88,6 +88,7 @@ In the project directory, you can run the following commands:
 - `npm run preview` or `yarn preview`: Previews the production build locally after running `npm run build`.
 
 ## Folder Structure
+```
 /src
   ├── /assets                # Static files like images, icons, etc.
   │    ├── /images            # Folder for image assets
@@ -114,3 +115,4 @@ In the project directory, you can run the following commands:
 
 /public
   └── index.html             # Main HTML file that loads the app
+```
