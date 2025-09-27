@@ -52,6 +52,7 @@ export const authApi = baseApi.injectEndpoints({
       }),
       providesTags: ["USER"],  
     }),
+    
       getAlluser: builder.query({
       query: (params) => ({
         url: "/user/getalluser",

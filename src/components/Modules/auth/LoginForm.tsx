@@ -1,10 +1,13 @@
+import { useState } from "react";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"; // shadcn Tabs
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router";
+import { ThreeDot } from "react-loading-indicators";
+
 import {
   Form,
   FormControl,
-  FormDescription,
   FormField,
   FormItem,
   FormLabel,
@@ -14,30 +17,21 @@ import { useForm } from "react-hook-form";
 import z from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { cn } from "@/lib/utils";
-// import Password from "../../ui/password";
-
 import { CheckCircle2, XCircle } from "lucide-react";
-
-import { useState } from "react";
 import Password from "@/components/ui/password";
-
 import { toast } from "sonner";
-// import config from "@/config";
-import {
-  useLoginMutation,
-
-} from "@/components/Redux/Features/Auth/auth.api";
+import { useLoginMutation } from "@/components/Redux/Features/Auth/auth.api";
 import { loginSchema } from "@/util/UserVaidationZodSchema/LoginSchema";
 import { role } from "@/Constant/role";
+
 export function LoginForm({
   className,
   ...props
 }: React.HTMLAttributes<HTMLDivElement>) {
   const navigate = useNavigate();
-  const [login] = useLoginMutation();
- 
-
+  const [login, {isLoading}] = useLoginMutation();
   const [message, setMessage] = useState("");
+  const [tab, setTab] = useState("user");
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
@@ -47,6 +41,20 @@ export function LoginForm({
     },
   });
 
+  // Auto fill for admin login
+  const handleTabChange = (value: string) => {
+    setTab(value);
+    if (value === "admin") {
+      form.setValue("email", "admin@gmail.com");
+      form.setValue("password", "1234567A@");
+    } else {
+      form.reset({
+        email: "",
+        password: "",
+      });
+    }
+  };
+
   /* submit handler */
   const onSubmit = async (data: z.infer<typeof loginSchema>) => {
     const userInfo = {
@@ -55,10 +63,9 @@ export function LoginForm({
     };
     try {
       const result = await login(userInfo).unwrap();
-      
       const userRole = result?.data?.user?.role;
 
-      if ( userRole === role.ADMIN) {
+      if (userRole === role.ADMIN) {
         navigate("/admin/analytics");
       } else if (userRole === role.SENDER) {
         navigate("/sender/createPercel");
@@ -76,14 +83,14 @@ export function LoginForm({
         toast.error("Your account is not verified.");
       } else if (err?.data?.message === "Invalid email and password") {
         setMessage("Invalid email and password");
-      }
-      
-      else if(err?.data?.message === "user is blocked") {
-         toast.error("You are blocked by admin")
-      }
-      else if(err?.data?.message === "Account was auto-created. Please complete registration first.") {
+      } else if (err?.data?.message === "user is blocked") {
+        toast.error("You are blocked by admin");
+      } else if (
+        err?.data?.message ===
+        "Account was auto-created. Please complete registration first."
+      ) {
         setMessage("Plz register before you login");
-        toast.error("Plz register before you login")
+        toast.error("Plz register before you login");
       }
     }
   };
@@ -93,11 +100,19 @@ export function LoginForm({
       <div className="flex flex-col items-center gap-2 text-center py-3">
         <h1 className="text-2xl font-bold">Login to your account</h1>
       </div>
+
+      {/* Tabs for User / Admin */}
+      <Tabs value={tab} onValueChange={handleTabChange} className="w-full">
+        <TabsList className="grid w-full grid-cols-2 mb-4">
+          <TabsTrigger value="user">User Login</TabsTrigger>
+          <TabsTrigger value="admin">Admin Login</TabsTrigger>
+        </TabsList>
+      </Tabs>
+
       <div className="grid gap-8 ">
-        {/* Form  start*/}
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4 ">
-            {/* email */}
+            {/* Email */}
             <FormField
               control={form.control}
               name="email"
@@ -124,7 +139,6 @@ export function LoginForm({
                         {...field}
                       />
                     </FormControl>
-                    <FormDescription></FormDescription>
                     <FormMessage />
                   </FormItem>
                 );
@@ -142,7 +156,6 @@ export function LoginForm({
                 const hasSpecialChar = /[^A-Za-z0-9]/.test(password);
                 const isValid = isMinLength && hasUpperCase && hasSpecialChar;
 
-                // Helper component inside render
                 const Criterion = ({
                   passed,
                   label,
@@ -174,7 +187,6 @@ export function LoginForm({
                         )}
                       />
                     </FormControl>
-
                     <div className="mt-2 space-y-1">
                       <Criterion
                         passed={isMinLength}
@@ -189,7 +201,6 @@ export function LoginForm({
                         label="One special character"
                       />
                     </div>
-
                     <FormMessage />
                   </FormItem>
                 );
@@ -197,34 +208,29 @@ export function LoginForm({
             />
             <small className="text-red-700"> {message}</small>
 
-            <Button className="w-full rounded-none" type="submit">
-              Submit
+            <Button
+              className="w-full rounded-none"
+              type="submit"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <div className="flex justify-between items-center gap-x-3">
+                  <span>submit</span>
+                <ThreeDot color="white" size="small" text="" textColor="" />
+                </div>
+              ) : (
+                "Submit"
+              )}
             </Button>
           </form>
-          <div className="grid gap-3">
-            <div className="flex items-center">
-              <a
-                href="#"
-                className="ml-auto text-sm underline-offset-4 hover:underline"
-              >
-                Forgot your password?
-              </a>
-            </div>
-          </div>
         </Form>
-        {/* Form end */}
 
-        <div className="after:border-border relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t">
-          <span className="bg-background text-muted-foreground relative z-10 px-2">
-            Or continue with
-          </span>
+        <div className="text-center text-sm">
+          Don&apos;t have an account?{" "}
+          <Link to="/register" className="underline underline-offset-4">
+            signUp
+          </Link>
         </div>
-      </div>
-      <div className="text-center text-sm">
-        Don&apos;t have an account?{" "}
-        <Link to="/register" className="underline underline-offset-4">
-          signUp
-        </Link>
       </div>
     </div>
   );

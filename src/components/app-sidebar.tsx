@@ -69,15 +69,18 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                       >
                         <Link to={item.url}>{item.title}</Link>
                       </SidebarMenuButton>
+                    
                     </SidebarMenuItem>
                   );
                 })}
               </SidebarMenu>
             </SidebarGroupContent>
+           
           </SidebarGroup>
         ))}
       </SidebarContent>
       <SidebarRail />
+           {/* <button className="bg-primary p-5 ">Logout</button> */}
     </Sidebar>
   );
 }

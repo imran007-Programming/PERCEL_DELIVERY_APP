@@ -164,7 +164,7 @@ export default function PercelTable() {
   };
 
   const handleCancelDelete = () => {
-    setShowConfirmModal(false); // Close modal if the user clicks 'No'
+    setShowConfirmModal(false); 
   };
 
   // If loading, show loader
