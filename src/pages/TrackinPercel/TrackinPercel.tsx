@@ -1,5 +1,5 @@
 import { useTrackThePercelQuery } from "@/components/Redux/Features/Percel/percel.api";
-import Loader from "@/components/ui/Loader";
+import loaderJson from "../../assets/lottie/Forklift loading truck.json"
 import {
   Timeline,
   TimelineContent,
@@ -10,6 +10,7 @@ import {
   TimelineSeparator,
   TimelineTitle,
 } from "@/components/ui/timeline";
+import LottieLoader from "@/shared/lotttieAnimation";
 
 import { BoxIcon } from "lucide-react";
 import { useEffect, useState } from "react";
@@ -51,7 +52,12 @@ export default function TrackinPercel() {
 
   // If tracking data is not available, show loading
   if (isFetching) {
-    return <Loader />;
+   return (
+      <LottieLoader
+        animationData={loaderJson}
+        size={150}
+        ariaLabel="Loading app..."
+      />)
   }
 
   const { reciverInfo, trackingEvents } = trackPercel.data;

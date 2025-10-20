@@ -8,6 +8,7 @@ export const percelApi = baseApi.injectEndpoints({
         method: "POST",
         data: percelInfo,
       }),
+         invalidatesTags:["UPDATEPERCEL"]
     }),
     getPercelBySender: builder.query({
       query: ({ senderId, params }) => {
@@ -17,7 +18,7 @@ export const percelApi = baseApi.injectEndpoints({
           params,
         };
       },
-      providesTags: ["PERCEL"],
+      providesTags: ["PERCEL","UPDATEPERCEL"],
       transformResponse: (arg) => arg.data,
     }),
     getPercelByReceiver: builder.query({

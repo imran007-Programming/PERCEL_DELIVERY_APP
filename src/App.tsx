@@ -2,6 +2,7 @@ import { Outlet, useLocation } from "react-router";
 import CommonLayouts from "./components/ui/Layouts/CommonLayouts";
 import { useEffect } from "react";
 
+
 function App() {
    const location = useLocation();
 
@@ -26,7 +27,7 @@ function App() {
  
   return (
     <CommonLayouts>
-      
+        
       <Outlet />
     </CommonLayouts>
   );

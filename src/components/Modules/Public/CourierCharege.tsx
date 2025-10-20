@@ -1,27 +1,42 @@
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
-import { motion } from "framer-motion";  // Import motion from framer-motion
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { motion } from "framer-motion"; // Import motion from framer-motion
 
 export default function CourierCharge() {
   return (
-      <div className="mx-5 space-y-4">
+    <div className="container mx-5 space-y-4">
       <h1 className="text-4xl font-semibold">Our Courier Charges</h1>
       <p className="text-xl">Select Service Type</p>
       <div>
         <Tabs className="space-y-10" defaultValue="tab-1">
-         <TabsList className="grid sm:grid-cols-4 grid-cols-2 gap-y-6 sm:space-y-0 space-x-3 justify-center">
-  <TabsTrigger className="sm:text-[18px] text-md" value="tab-1">Same City Delivery</TabsTrigger>
-  <TabsTrigger className="sm:text-[18px] text-md" value="tab-2">Suburb Delivery</TabsTrigger>
-  <TabsTrigger className="sm:text-[18px] text-md" value="tab-3">Inner City Dhaka</TabsTrigger>
-  <TabsTrigger className="sm:text-[18px] text-md" value="tab-4">Outside Dhaka</TabsTrigger>
-</TabsList>
+          <TabsList className="grid sm:grid-cols-4 grid-cols-2 gap-y-6 sm:space-y-0 space-x-3 justify-center">
+            <TabsTrigger className="sm:text-[18px] text-md" value="tab-1">
+              Same City Delivery
+            </TabsTrigger>
+            <TabsTrigger className="sm:text-[18px] text-md" value="tab-2">
+              Suburb Delivery
+            </TabsTrigger>
+            <TabsTrigger className="sm:text-[18px] text-md" value="tab-3">
+              Inner City Dhaka
+            </TabsTrigger>
+            <TabsTrigger className="sm:text-[18px] text-md" value="tab-4">
+              Outside Dhaka
+            </TabsTrigger>
+          </TabsList>
 
           {/* Tab 1 Content */}
           <TabsContent value="tab-1">
             <motion.div
-              initial={{ opacity: 0 }}  
-              animate={{ opacity: 1 }} 
-              transition={{ duration: 1 }}  
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 1 }}
             >
               <Table className="border-2">
                 <TableHeader>
@@ -65,7 +80,7 @@ export default function CourierCharge() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}  
+              transition={{ duration: 1 }}
             >
               <Table className="border-2 text-2xl">
                 <TableHeader>
@@ -109,7 +124,7 @@ export default function CourierCharge() {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              transition={{ duration: 1 }}  
+              transition={{ duration: 1 }}
             >
               <Table className="border-2 text-2xl">
                 <TableHeader>

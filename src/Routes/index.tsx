@@ -3,8 +3,8 @@ import { lazy } from "react";
 import App from "@/App";
 
 // Lazy loading the pages
-const Login = lazy(() => import("@/pages/Auth/Login"));
-const Register = lazy(() => import("@/pages/Auth/Registration"));
+
+
 const HomePage = lazy(() => import("@/pages/HomePage"));
 const About = lazy(() => import("@/pages/About/About"));
 const Contact = lazy(() => import("@/pages/Contact/Contuct"));
@@ -21,6 +21,9 @@ import { role } from "@/Constant/role";
 import { withAuth } from "@/util/RoleBasedRouteAUTH/WithAuth";
 import { RecevierSidebarItems } from "./ReceiverSideBarsItems";
 import type { Trole } from "@/types";
+import Login from "@/pages/Auth/Login";
+import Register from "@/pages/Auth/Registration";
+import location from "@/pages/location/location";
 
 // Define the routes with CommonLayouts wrapping Login and Register components
 const router = createBrowserRouter([
@@ -47,6 +50,10 @@ const router = createBrowserRouter([
       {
         Component: TrackinPercel, 
         path: "/track/:trackingId",
+      },
+      {
+        Component: location, 
+        path: "/location",
       },
       {
         Component: Login,

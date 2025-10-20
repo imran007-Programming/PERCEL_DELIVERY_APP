@@ -20,23 +20,26 @@ import {
   SelectContent,
 } from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { Badge } from "@/components/ui/badge";
 import type { IError, IPercel } from "@/types";
-import Loader from "@/components/ui/Loader";
+import loaderJson from "../../assets/lottie/Forklift loading truck.json";
 
 import PaginationFiLtering from "@/util/Pagination/Pagination";
+import LottieLoader from "@/shared/lotttieAnimation";
+import { Send } from "lucide-react";
 
 export default function PercelTable() {
   const { data, isFetching } = useUserInfoQuery(undefined);
   const [selectedStatus, setSelectedStatus] = useState("");
+   const [activeButton, setActiveButton] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [filter, setFilter] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
 
   const senderId = data?.data?._id;
-
+  const [search, setSearch] = useState("");
   const [cancelStatus] = useCancelPercelStatusBySenderMutation();
 
   // Fetch sender's parcels using the senderId, search query, and filter
@@ -46,17 +49,31 @@ export default function PercelTable() {
       params: {
         searchTerm: searchQuery || undefined,
         status: filter === "all" ? undefined : filter || undefined,
-        limit: 2,
+        limit: 10,
         page: currentPage,
       },
     });
 
+  
+
+  useEffect(() => {
+    if (search === "") {
+      setSearchQuery("");
+    }
+  }, [search]);
+
+  const handlesearchAction = () => {
+    setSearchQuery(search);
+  };
+
   // If loading parcels or error occurred, display loading/error messages
   if (isFetching || isFetchingPercels) {
     return (
-    
-        <Loader />
-   
+      <LottieLoader
+        animationData={loaderJson}
+        size={150}
+        ariaLabel="Loading app..."
+      />
     );
   }
 
@@ -92,171 +109,197 @@ export default function PercelTable() {
   return (
     <div className="overflow-x-auto">
       {/* Search Bar */}
-      <div className="mb-4 gap-x-4 flex justify-center items-center mt-4">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search by Tracking ID"
-          className="p-2 border rounded w-[50%]"
-        />
+      <div className="my-6 mr-5 flex flex-wrap justify-between items-center ">
+        {/* Search Input with Send Button */}
+        <div className="relative w-[40%] flex">
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search by Tracking ID"
+            className="pl-10 pr-[60px] py-2 w-full rounded-l-lg! border-2 border-primary focus:outline-none"
+          />
+          <div
+            onClick={handlesearchAction}
+            className="bg-primary p-3 cursor-pointer rounded-r-lg flex items-center justify-center"
+          >
+            <Send />
+          </div>
+        </div>
+
+        {/* Status Filter */}
+        <div className="flex gap-4 mr-5">
+          <Select
+            value={filter}
+            onValueChange={(newStatus) => setFilter(newStatus)}
+          >
+            <SelectTrigger className="w-40 rounded-lg! border-2 border-primary">
+              <SelectValue placeholder="Select Status" />
+            </SelectTrigger>
+            <SelectContent className="rounded-xl! border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 shadow-md">
+              <SelectItem value="all">All Statuses</SelectItem>
+              <SelectItem value="PENDING">PENDING</SelectItem>
+              <SelectItem value="CANCELED">CANCELED</SelectItem>
+              <SelectItem value="PICKED">PICKED</SelectItem>
+              <SelectItem value="IN_TRANSIT">IN_TRANSIT</SelectItem>
+              <SelectItem value="DELIVERED">DELIVERED</SelectItem>
+              <SelectItem value="RETURNED_REQUEST">RETURNED_REQUEST</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
       </div>
 
-      {/* Filters for status */}
-      <div className="mb-4 flex items-center">
-        <Select
-          value={filter}
-          onValueChange={(newStatus) => setFilter(newStatus)}
-        >
-          <SelectTrigger className="w-32">
-            <SelectValue placeholder="Select Status" />
-          </SelectTrigger>
-          <SelectContent className="bg-white dark:bg-gray-800 border border-gray-300">
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="PENDING">PENDING</SelectItem>
-            <SelectItem value="CANCELED">CANCELED</SelectItem>
-            <SelectItem value="PICKED">PICKED</SelectItem>
-            <SelectItem value="IN_TRANSIT">IN_TRANSIT</SelectItem>
-            <SelectItem value="DELIVERED">DELIVERED</SelectItem>
-            <SelectItem value="RETURNED_REQUEST">RETURNED_REQUEST</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+      <div className="overflow-x-auto rounded-2xl shadow-2xl border border-gray-300 dark:border-gray-700">
+        <Table className="min-w-full table-auto border-collapse">
+          <TableCaption className="text-gray-600 dark:text-gray-300 py-2">
+            All Parcels Retrieved Successfully
+          </TableCaption>
+          <TableHeader>
+            <TableRow className="bg-gray-200 dark:bg-gray-800 text-gray-700 dark:text-gray-200">
+              <TableHead className="border-b border-gray-300 px-4 py-2 rounded-tl-2xl">
+                Percel Type
+              </TableHead>
+              <TableHead className="border-b border-gray-300 px-4 py-2">
+                Weight
+              </TableHead>
+              <TableHead className="border-b border-gray-300 px-4 py-2">
+                Fee
+              </TableHead>
+              <TableHead className="border-b border-gray-300 px-4 py-2">
+                Tracking ID
+              </TableHead>
+              <TableHead className="border-b border-gray-300 px-4 py-2">
+                Current Location
+              </TableHead>
+              <TableHead className="border-b border-gray-300 px-4 py-2">
+                Pickup Address
+              </TableHead>
+              <TableHead className="border-b border-gray-300 px-4 py-2">
+                Dispatch Location
+              </TableHead>
+              <TableHead className="border-b border-gray-300 px-4 py-2">
+                Tracking Events
+              </TableHead>
+              <TableHead className="border-b border-gray-300 px-4 py-2 rounded-tr-2xl">
+                Action
+              </TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody>
+            {senderAllPercels?.percelData?.map(
+              (percel: IPercel, index: number) => {
+                const lastEventStatus = percel.trackingEvents.length
+                  ? percel.trackingEvents[percel.trackingEvents.length - 1]
+                      .status
+                  : null;
 
-      <Table className="table-auto border-collapse border border-gray-300">
-        <TableCaption>All Parcels Retrieved Successfully</TableCaption>
-        <TableHeader>
-          <TableRow className="bg-gray-200 dark:bg-gray-800">
-            <TableHead className="border border-gray-300">
-              Percel_Type
-            </TableHead>
-            <TableHead className="border border-gray-300">Weight</TableHead>
-            <TableHead className="border border-gray-300">Fee</TableHead>
-            <TableHead className="border border-gray-300">
-              Tracking ID
-            </TableHead>
-            <TableHead className="border border-gray-300">
-              Current Location
-            </TableHead>
-            <TableHead className="border border-gray-300">
-              Pickup Address
-            </TableHead>
-            <TableHead className="border border-gray-300">
-              Dispatch Location
-            </TableHead>
-            <TableHead className="border border-gray-300">
-              Tracking Events
-            </TableHead>
-            <TableHead className="border border-gray-300">Action</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {senderAllPercels?.percelData?.map(
-            (percel: IPercel, index: number) => {
-              // Get the last event's status
-              const lastEventStatus = percel.trackingEvents.length
-                ? percel.trackingEvents[percel.trackingEvents.length - 1].status
-                : null;
+                if (filter && lastEventStatus !== filter && filter !== "all")
+                  return null;
 
-              // Only display the parcel if the last event status matches the filter
-              if (filter && lastEventStatus !== filter && filter !== "all") {
-                return null;
-              }
-
-              return (
-                <TableRow
-                  key={index}
-                  className="border-t border-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700"
-                >
-                  <TableCell className="border border-gray-300">
-                    {percel.percelType}
-                  </TableCell>
-                  <TableCell className="border border-gray-300">
-                    {percel.weight.value} {percel.weight.unit}
-                  </TableCell>
-                  <TableCell className="border border-gray-300">
-                    {percel.fee} Taka
-                  </TableCell>
-                  <TableCell className="border border-gray-300">
-                    {percel.trackingId}
-                  </TableCell>
-                  <TableCell className="border border-gray-300">
-                    {percel.currentLocation}
-                  </TableCell>
-                  <TableCell className="border border-gray-300">
-                    {percel.pickupAddress}
-                  </TableCell>
-                  <TableCell className="border border-gray-300">
-                    {percel.dispatchLocation}
-                  </TableCell>
-
-                  <TableCell className="border border-gray-300">
-                    {/* Display the last event's status */}
-                    {percel.trackingEvents.length
-                      ? percel.trackingEvents
-                          .slice(-1) // Get the last event
-                          .map((event, eventIndex) => (
-                            <div key={eventIndex} className="mb-2">
-                              <Badge
-                                className={
-                                  event.status === "CANCELED"
-                                    ? "bg-red-500 text-white"
-                                    : "bg-green-500 text-white dark:bg-green-600"
-                                }
+                return (
+                  <TableRow
+                    key={index}
+                    className="border-b border-gray-200 dark:border-gray-700 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all"
+                  >
+                    <TableCell className="px-4 py-2">
+                      {percel.percelType}
+                    </TableCell>
+                    <TableCell className="px-4 py-2">
+                      {percel.weight.value} {percel.weight.unit}
+                    </TableCell>
+                    <TableCell className="px-4 py-2">
+                      {percel.fee} Taka
+                    </TableCell>
+                    <TableCell className="px-4 py-2">
+                      {percel.trackingId}
+                    </TableCell>
+                    <TableCell className="px-4 py-2">
+                      {percel.currentLocation}
+                    </TableCell>
+                    <TableCell className="px-4 py-2">
+                      {percel.pickupAddress}
+                    </TableCell>
+                    <TableCell className="px-4 py-2">
+                      {percel.dispatchLocation}
+                    </TableCell>
+                    <TableCell className="px-4 py-2 space-y-2">
+                      {percel.trackingEvents.length
+                        ? percel.trackingEvents
+                            .slice(-1)
+                            .map((event, eventIndex) => (
+                              <div
+                                key={eventIndex}
+                                className="p-2 rounded-lg bg-gray-50 dark:bg-gray-900 shadow-inner"
                               >
-                                <strong>Status:</strong> {event.status}
-                              </Badge>
-                              <p>
-                                <strong>Location:</strong> {event.location}
-                              </p>
-                              <p>
-                                <strong>Note:</strong> {event.note}
-                              </p>
-                              <p>
-                                <strong>Time:</strong>{" "}
-                                {new Date(event.timestamp).toLocaleString()}
-                              </p>
-                            </div>
-                          ))
-                      : "No tracking event found"}
-                  </TableCell>
-
-                  <TableCell className="border border-gray-300">
-                    <Select
-                      value={selectedStatus}
-                      onValueChange={(newStatus) =>
-                        setSelectedStatus(newStatus)
-                      }
-                    >
-                      <SelectTrigger className="w-32">
-                        <SelectValue placeholder="Select Status" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-white dark:bg-gray-800 border border-gray-300">
-                        <SelectItem value="CANCELED">CANCELED</SelectItem>
-                      </SelectContent>
-                    </Select>
-                    <Button
-                      onClick={() =>
-                        handleStatusChange(percel._id, percel.dispatchLocation)
-                      }
-                      className="mt-2 bg-chart-2"
-                      disabled={!selectedStatus}
-                    >
-                      Update Status
-                    </Button>
-                  </TableCell>
-                </TableRow>
-              );
-            }
-          )}
-        </TableBody>
-      </Table>
+                                <Badge
+                                  className={`${
+                                    event.status === "CANCELED"
+                                      ? "bg-red-500 text-white"
+                                      : "bg-green-500 text-white dark:bg-green-600"
+                                  } mb-1`}
+                                >
+                                  <strong>Status:</strong> {event.status}
+                                </Badge>
+                                <p className="text-sm">
+                                  <strong>Location:</strong> {event.location}
+                                </p>
+                                <p className="text-sm">
+                                  <strong>Note:</strong> {event.note}
+                                </p>
+                                <p className="text-sm">
+                                  <strong>Time:</strong>{" "}
+                                  {new Date(event.timestamp).toLocaleString()}
+                                </p>
+                              </div>
+                            ))
+                        : "No tracking event found"}
+                    </TableCell>
+                    <TableCell className="px-4 py-2 space-y-2">
+                      <Select
+                        // value={selectedStatus}
+                        onValueChange={(newStatus) =>
+                          setSelectedStatus(newStatus)
+                        }
+                         onOpenChange={() => setActiveButton(percel._id)}
+                      >
+                        <SelectTrigger className="w-32 rounded-lg border border-gray-300 dark:border-gray-600">
+                          <SelectValue placeholder="Select Status" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-md">
+                          <SelectItem value="CANCELED">CANCELED</SelectItem>
+                        </SelectContent>
+                      </Select>
+                      <Button
+                        onClick={() =>
+                          handleStatusChange(
+                            percel._id,
+                            percel.dispatchLocation
+                          )
+                        }
+                        className="mt-2 bg-chart-2 rounded-lg w-full"
+                        disabled={activeButton !== percel._id}
+                      >
+                         {activeButton === percel._id
+                              ? selectedStatus
+                              : "Update Status"}
+                     
+                      </Button>
+                    </TableCell>
+                  </TableRow>
+                );
+              }
+            )}
+          </TableBody>
+        </Table>
+      </div>
       {/* Pagination */}
-      <PaginationFiLtering
-        currentPage={currentPage}
-        setCurrentPage={setCurrentPage}
-        totalPage={totalPage}
-      />
+      {senderAllPercels?.percelData?.length >= 10 && (
+        <PaginationFiLtering
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          totalPage={totalPage}
+        />
+      )}
     </div>
   );
 }

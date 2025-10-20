@@ -1,4 +1,3 @@
-import { Bar, Pie } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -11,8 +10,15 @@ import {
 } from "chart.js";
 import { useGetPercelByAdminQuery } from "@/components/Redux/Features/Percel/percel.api";
 import type { IPercel } from "@/types";
-import Loader from "@/components/ui/Loader";
+import loaderJson from "../../assets/lottie/Forklift loading truck.json";
 import { useGetAlluserQuery } from "@/components/Redux/Features/Auth/auth.api";
+import LottieLoader from "@/shared/lotttieAnimation";
+import StatusAndUserCard from "./AdminAnalyticsChildren/StatusAndUserCard";
+import Charts from "./AdminAnalyticsChildren/Charts";
+import TotalRevenue from "./AdminAnalyticsChildren/TotalRevenue";
+import dayjs from "dayjs";
+import { MonthlyRevenueChart, type MonthlyRevenue } from "./AdminAnalyticsChildren/MonthRevenueChart";
+
 
 ChartJS.register(
   CategoryScale,
@@ -29,7 +35,15 @@ const Analytics = () => {
     useGetPercelByAdminQuery(undefined);
   const { data: usersData, isFetching: usersLoading } = useGetAlluserQuery({});
 
-  if (percelsLoading || usersLoading) return <Loader />;
+  if (percelsLoading || usersLoading) {
+    return (
+      <LottieLoader
+        animationData={loaderJson}
+        size={150}
+        ariaLabel="Loading app..."
+      />
+    );
+  }
 
   const totalParcels = percels?.percelData || [];
   const totalUsers = usersData?.data?.userData?.length || 0;
@@ -45,13 +59,13 @@ const Analytics = () => {
   });
 
   // Count last statuses
-  const parcelStatusData = lastStatuses.reduce((acc: any, status: string) => {
+  const parcelStatusData = lastStatuses.reduce((acc: Record<string, number>, status: string) => {
     acc[status] = (acc[status] || 0) + 1;
     return acc;
-  }, {});
+  }, {} as Record<string, number>);
 
   const labels = Object.keys(parcelStatusData);
-  const values = Object.values(parcelStatusData);
+  const values: number[] = Object.values(parcelStatusData) as number[];
 
   // Detect if dark mode is active
   const isDarkMode =
@@ -92,14 +106,14 @@ const Analytics = () => {
   };
 
   // Total Users Bar Chart
-  const userRoles = users.reduce((acc: any, user: any) => {
+  const userRoles = users.reduce((acc: Record<string, number>, user: { role?: string }) => {
     const role = user.role || "Customer";
     acc[role] = (acc[role] || 0) + 1;
     return acc;
   }, {} as Record<string, number>);
 
   const userLabels = Object.keys(userRoles);
-  const userValues = Object.values(userRoles);
+  const userValues: number[] = Object.values(userRoles) as number[];
 
   const userBarData = {
     labels: userLabels,
@@ -116,97 +130,63 @@ const Analytics = () => {
     ],
   };
 
+  /* Percel Summery */
+
+  const percelSummery = percels?.percelData?.map((percel: IPercel) => {
+    const lastEvents = percel.trackingEvents[percel.trackingEvents.length - 1];
+    return {
+      status: lastEvents.status,
+      fee: percel.fee || 0,
+    };
+  });
+
+  /* total Revenue */
+  const totalRevenue = percelSummery
+    .filter((p: { status: string; fee: number }) => p.status === "DELIVERED")
+    .reduce((sum: number, p: { status: string; fee: number }) => sum + p.fee, 0);
+
+  /* Motnthly revenue */
+
+  const deliveredParcels = percels?.percelData?.filter((p: IPercel) => {
+    const lastEvent = p.trackingEvents[p.trackingEvents.length - 1];
+    return lastEvent?.status === "DELIVERED";
+  });
+
+  
+
+  // 2️⃣ Group by month and sum revenue
+  const monthlyRevenueMap = deliveredParcels.reduce((acc: Record<string, number>, percel: IPercel) => {
+    const month = dayjs(percel.createdAt).format("MMM YYYY");
+    acc[month] = (acc[month] || 0) + percel.fee;
+    return acc;
+  }, {} as Record<string, number>);
+
+  // 3️⃣ Convert to array for charting
+  const monthlyRevenueData: MonthlyRevenue[] = Object.entries(monthlyRevenueMap).map(
+  ([month, revenue]) => ({
+    month,
+    revenue: Number(revenue), 
+  })
+);
+
+
+
+
   return (
-    <div className="my-5 px-5 bg-[#EEEEEE] dark:bg-gray-900">
-      <h2 className="text-2xl font-bold mb-5 text-gray-700 dark:text-gray-100">
-        Parcel Analytics Dashboard
-      </h2>
-
+    <div className="my-5 px-5 space-y-5">
       {/* Cards */}
-      <div className="flex flex-wrap font-medium  gap-6 mb-10">
-        <div className="bg-[#222831]  dark:bg-blue-500 shadow-xl  rounded-lg p-6 flex-1 min-w-[100px] text-center">
-          <p className="text-gray-200 dark:text-gray-300">Total Users</p>
-          <p className="text-2xl font-bold text-white">{totalUsers}</p>
-        </div>
-        <div className="bg-[#393E46] dark:bg-green-500 shadow-xl  rounded-lg p-6 flex-1 min-w-[200px] text-center">
-          <p className="text-gray-200 dark:text-gray-300">Total Parcels</p>
-          <p className="text-2xl font-bold text-white">{totalParcels.length}</p>
-        </div>
-        <div className="bg-[#00ADB5]  text-primary dark:bg-primary shadow-xl  rounded-lg p-6 flex-1 min-w-[200px] text-center">
-          <p className="text-gray-100 dark:text-gray-300">Parcels Pending</p>
-          <p className="text-2xl font-bold text-white">
-            {parcelStatusData.PENDING || 0}
-          </p>
-        </div>
-        <div className="bg-[#EEEEEE] dark:bg-rose-500 shadow-xl  rounded-lg p-6 flex-1 min-w-[200px] text-center">
-          <p className="text-gray-600 dark:text-gray-300">Parcels In Transit</p>
-          <p className="text-2xl font-bold text-gray-600">
-            {parcelStatusData.IN_TRANSIT || 0}
-          </p>
-        </div>
-      </div>
+      <StatusAndUserCard
+        parcelStatusData={parcelStatusData}
+        totalParcels={totalParcels}
+        totalUsers={totalUsers}
+      />
+      {/* Total Revenue */}
+      <TotalRevenue totalRevenue={totalRevenue} />
 
+      {/*Monthly Revenue */}
+      <MonthlyRevenueChart data={monthlyRevenueData}/>
       {/* Charts */}
-      <div className="flex flex-wrap gap-6">
-        {/* Parcel Bar Chart */}
-        <div className="flex-1 min-w-[300px] max-w-[400px] bg-[#6F4A8E] dark:bg-gray-900 p-5 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold mb-3 text-gray-200 dark:text-gray-100">
-            Parcel Status (Bar Chart)
-          </h3>
-          <div className="w-full h-64">
-            <Bar
-              data={barData}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { labels: { color: "#fff" } } },
-                scales: {
-                  x: { ticks: { color: "#fff" } },
-                  y: { ticks: { color: "#fff" } },
-                },
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Parcel Pie Chart */}
-        <div className="flex-1 min-w-[300px] max-w-[400px] bg-gray-800 dark:bg-gray-900 p-5 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold mb-3 text-gray-200 dark:text-gray-100">
-            Parcel Status (Pie Chart)
-          </h3>
-          <div className="w-full h-64">
-            <Pie
-              data={pieData}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { labels: { color: "#fff" } } },
-              }}
-            />
-          </div>
-        </div>
-
-        {/* Users Bar Chart */}
-        <div className="flex-1 min-w-[300px] max-w-[400px] bg-[#6F4A8E] dark:bg-gray-900 p-5 rounded-lg shadow-md">
-          <h3 className="text-lg font-semibold mb-3 text-gray-200 dark:text-gray-100">
-            Total Users by Role
-          </h3>
-          <div className="w-full h-64">
-            <Bar
-              data={userBarData}
-              options={{
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: { legend: { labels: { color: "#fff" } } },
-                scales: {
-                  x: { ticks: { color: "#fff" } },
-                  y: { ticks: { color: "#fff" } },
-                },
-              }}
-            />
-          </div>
-        </div>
-      </div>
+      <Charts barData={barData} pieData={pieData} userBarData={userBarData} />
     </div>
   );
 };

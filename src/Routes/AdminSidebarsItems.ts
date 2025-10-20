@@ -1,9 +1,10 @@
 
+import AdminChatList from "@/pages/Admin/AdminChatList";
 import AllPercel from "@/pages/Admin/AllPercel";
 import AllUser from "@/pages/Admin/AllUser";
 import Analytics from "@/pages/Admin/Analytics";
 import type { ISidebarItems } from "@/types";
-import { ArrowRightFromLine, Grid2x2, Paperclip } from "lucide-react";
+import { ArrowRightFromLine, Grid2x2, MessageCircleHeart, Paperclip } from "lucide-react";
 
 export const adminSidebarItems:ISidebarItems[]=[
     {
@@ -27,6 +28,13 @@ export const adminSidebarItems:ISidebarItems[]=[
           url: "/admin/allpercel",
           component:AllPercel,
           icon:Paperclip
+
+        },
+        {
+          title: "Chat with customer",
+          url: "/admin/chat",
+          component:AdminChatList,
+          icon:MessageCircleHeart
 
         },
       ],

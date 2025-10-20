@@ -1,12 +1,40 @@
+
+
+/* 🪶 Google Fonts Import */
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@300;400;500;600;700;800;900&display=swap');
+
 @import "tailwindcss";
 @import "tw-animate-css";
+@import "leaflet/dist/leaflet.css";
+/* if using markercluster */
+@import "leaflet.markercluster/dist/MarkerCluster.css";
+@import "leaflet.markercluster/dist/MarkerCluster.Default.css";
 
 @custom-variant dark (&:is(.dark *));
+/* Global font */
+body {
+  font-family: 'Nunito', sans-serif;
+
+
+}
+/* Prevent layout issues on mobile when keyboard opens */
+html, body {
+  overscroll-behavior: contain; /* Prevent body scroll jump */
+  touch-action: manipulation;
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+}
+
+
+
+/* Prevent zoom on input focus (optional for iOS) */
+input, textarea, select {
+  font-size: 16px; /* iOS zoom issue fix */
+}
 
 /* index.css */
 .container {
   width: 100%;
-  max-width: 1200px; /* Maximum width of the container */
+  max-width: 1400px; /* Maximum width of the container */
   margin-left: auto;
   margin-right: auto;
   padding-left: 1rem; /* Padding for smaller screens */
@@ -55,7 +83,6 @@ textarea {
   border: 1px solid rgb(205, 202, 202);
 }
 
-
 .hide-scrollbar::-webkit-scrollbar {
   display: none; /* Hides the scrollbar */
 }
@@ -63,7 +90,23 @@ textarea {
 .hide-scrollbar {
   overflow-y: scroll; /* Allow scrolling, but hide scrollbar */
 }
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #e5e7eb; /* Tailwind gray-200 */
+}
+::-webkit-scrollbar-thumb {
+  background-color: #8b5cf6; /* Tailwind purple-500 */
+  border-radius: 9999px;
+}
 
+/* Firefox */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #8b5cf6 #e5e7eb;
+}
 @theme inline {
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
@@ -100,6 +143,24 @@ textarea {
   --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
+  --animate-marquee: marquee var(--duration) infinite linear;
+  --animate-marquee-vertical: marquee-vertical var(--duration) linear infinite;
+  @keyframes marquee {
+  from {
+    transform: translateX(0);
+    }
+  to {
+    transform: translateX(calc(-100% - var(--gap)));
+    }
+  }
+  @keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+    }
+  to {
+    transform: translateY(calc(-100% - var(--gap)));
+    }
+  }
 }
 
 :root {
@@ -138,7 +199,7 @@ textarea {
 }
 
 .dark {
-  --background: #101828;
+  --background: #020618;
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
   --card-foreground: oklch(0.985 0 0);
@@ -178,4 +239,9 @@ textarea {
   body {
     @apply bg-background text-foreground;
   }
+}
+
+::view-transition-old(root), ::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
 }

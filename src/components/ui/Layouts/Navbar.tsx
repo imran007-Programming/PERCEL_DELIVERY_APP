@@ -1,6 +1,6 @@
 import { useState } from "react";
-import Logo from "@/assets/Logo/Logo"; // Import your logo here
-import { ModeToggle } from "./Mode.toggler";
+import Logo from "@/assets/Logo/Logo";
+
 import { motion } from "framer-motion";
 import { Link } from "react-router";
 import {
@@ -11,6 +11,7 @@ import {
 
 import { useDispatch } from "react-redux";
 import { role } from "@/Constant/role";
+import { AnimatedThemeToggler } from "../animated-theme-toggler";
 
 const Navbar = () => {
   const [logout] = useLogoutMutation();
@@ -31,6 +32,7 @@ const Navbar = () => {
     { title: "Home", url: "/", role: "PUBLIC" },
     { title: "About", url: "/about", role: "PUBLIC" },
     { title: "Contact", url: "/contact", role: "PUBLIC" },
+    { title: "Our Covarage", url: "/location", role: "PUBLIC" },
     { title: "Dashboard", url: "/admin", role: role.ADMIN },
     { title: "Dashboard", url: "/sender", role: role.SENDER },
     { title: "Dashboard", url: "/receiver", role: role.RECEIVER },
@@ -42,7 +44,8 @@ const Navbar = () => {
 
   return (
     <motion.nav
-      className="shadow-md bg-white dark:bg-gray-900 fixed top-0 right-0 left-0 z-50"
+      className=" 
+      shadow-md bg-white dark:bg-[#020618] fixed top-0 right-0 left-0 z-[9999]"
       initial={{ opacity: 0, y: -50 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.5 }}
@@ -130,14 +133,15 @@ const Navbar = () => {
               </Link>
             </motion.button>
           )}
-          <ModeToggle />
+          {/* <ModeToggle /> */}
+          <AnimatedThemeToggler />
         </div>
 
         {/* Mobile Menu Toggle */}
         <div className="md:hidden flex items-center">
           <motion.button
             onClick={handleMobileMenuToggle}
-            className="text-gray-700"
+            className="relative flex flex-col justify-center items-center w-12 h-12 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 transition" 
             initial={{ rotate: 0 }}
             animate={{
               rotate: isMobileMenuOpen ? 180 : 0,
@@ -145,7 +149,7 @@ const Navbar = () => {
             }}
           >
             <motion.div
-              className="w-6 h-0.5 bg-gray-700 mb-1"
+              className="w-6 h-0.5 bg-gray-700 dark:bg-gray-200 mb-1"
               initial={{ rotate: 0 }}
               animate={{
                 rotate: isMobileMenuOpen ? 40 : 0,
@@ -154,7 +158,7 @@ const Navbar = () => {
               }}
             />
             <motion.div
-              className="w-6 h-0.5 bg-gray-700 mb-1"
+              className="w-6 h-0.5 bg-gray-700 dark:bg-gray-200 mb-1"
               initial={{ rotate: 0 }}
               animate={{
                 opacity: isMobileMenuOpen ? 0 : 1,
@@ -162,7 +166,7 @@ const Navbar = () => {
               }}
             />
             <motion.div
-              className="w-6 h-0.5 bg-gray-700 mt-1"
+              className="w-6 h-0.5 bg-gray-700 dark:bg-gray-200 mt-1"
               initial={{ rotate: 0 }}
               animate={{
                 rotate: isMobileMenuOpen ? -45 : 0,
@@ -235,19 +239,22 @@ const Navbar = () => {
                 </motion.button>
               )}
 
-             {!data?.data?.email && <motion.button
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-                transition={{ type: "spring", stiffness: 300 }}
-              >
-                <Link
-                  className="px-4 py-2 border border-primary text-primary rounded-md dark:bg-primary dark:text-white dark:border-primary"
-                  to="/register"
+              {!data?.data?.email && (
+                <motion.button
+                  whileHover={{ scale: 1.05 }}
+                  whileTap={{ scale: 0.95 }}
+                  transition={{ type: "spring", stiffness: 300 }}
                 >
-                  Sign Up
-                </Link>
-              </motion.button>}
-              <ModeToggle />
+                  <Link
+                    className="px-4 py-2 border border-primary text-primary rounded-md dark:bg-primary dark:text-white dark:border-primary"
+                    to="/register"
+                  >
+                    Sign Up
+                  </Link>
+                </motion.button>
+              )}
+              {/* <ModeToggle /> */}
+              <AnimatedThemeToggler />
             </div>
           </div>
         </motion.div>

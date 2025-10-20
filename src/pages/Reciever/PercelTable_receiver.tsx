@@ -19,21 +19,24 @@ import {
   SelectValue,
   SelectContent,
 } from "@/components/ui/select";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Badge } from "@/components/ui/badge";
 import type { IPercel } from "@/types";
-import Loader from "@/components/ui/Loader";
+import loaderJson from "../../assets/lottie/Forklift loading truck.json"
 import PaginationFiLtering from "@/util/Pagination/Pagination";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import PercelHistoryModal from "./PercelHistoryModal";
-import { CircleX } from "lucide-react";
+import { CircleX, Send } from "lucide-react";
+import LottieLoader from "@/shared/lotttieAnimation";
 
 export default function ReceiverPercelTable() {
   const { data, isFetching:userFetch } = useUserInfoQuery(undefined);
   const [selectedStatus, setSelectedStatus] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
+  const [search, setSearch] = useState("");
   const [filter, setFilter] = useState("");
+   const [activeButton, setActiveButton] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [confirmThePercel] = usePercelConfirmationByReceiverMutation();
   const [selectedParcel, setSelectedParcel] = useState<IPercel | null>(null);
@@ -46,19 +49,13 @@ export default function ReceiverPercelTable() {
       params: {
         searchTerm: searchQuery || undefined,
         status: filter === "all" ? undefined : filter || undefined,
-        limit: 1,
+        limit: 10,
         page: currentPage,
       },
     });
   const totalPage = getIncomeingPercel?.meta?.totalPage;
 
-  if (percelFetch || userFetch) {
-    return (
-      
-        <Loader />
-      
-    );
-  }
+  
 
   const handleStatusChange = async (
     percelId: string,
@@ -91,37 +88,70 @@ export default function ReceiverPercelTable() {
     setSelectedParcel(null);
   };
 
+    useEffect(() => {
+      if (search === "") {
+        setSearchQuery("");
+      }
+    }, [search]);
+  
+    const handlesearchAction = () => {
+      setSearchQuery(search);
+    };
+
+
+    if (percelFetch || userFetch) {
+   return (
+      <LottieLoader
+        animationData={loaderJson}
+        size={150}
+        ariaLabel="Loading app..."
+      />)
+  }
+
   return (
     <div className="overflow-x-auto">
-      <div className="mb-4 gap-x-4 flex justify-center items-center mt-4">
-        <input
-          type="text"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-          placeholder="Search by Tracking ID"
-          className="p-2 border rounded w-[50%]"
-        />
-      </div>
+     <div className=" my-6 flex flex-wrap justify-between items-center gap-4">
 
-      <div className="mb-4 flex items-center">
-        <Select
-          value={filter}
-          onValueChange={(newStatus) => setFilter(newStatus)}
-        >
-          <SelectTrigger className="w-32">
-            <SelectValue placeholder="Select Status" />
-          </SelectTrigger>
-          <SelectContent className="bg-white dark:bg-gray-800 border border-gray-300">
-            <SelectItem value="all">All Statuses</SelectItem>
-            <SelectItem value="PENDING">PENDING</SelectItem>
-            <SelectItem value="CANCELED">CANCELED</SelectItem>
-            <SelectItem value="PICKED">PICKED</SelectItem>
-            <SelectItem value="IN_TRANSIT">IN_TRANSIT</SelectItem>
-            <SelectItem value="DELIVERED">DELIVERED</SelectItem>
-            <SelectItem value="RETURNED_REQUEST">RETURNED_REQUEST</SelectItem>
-          </SelectContent>
-        </Select>
-      </div>
+  {/* Search Input */}
+  <div className="relative flex w-[48%] ">
+    <input
+      type="text"
+      value={search}
+      onChange={(e) => setSearch(e.target.value)}
+      placeholder="Search by Tracking ID"
+      className="w-full rounded-l-lg! border-2 border-primary px-4 py-2 focus:outline-none focus:ring-2 focus:ring-primary dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
+    />
+    <button
+      onClick={handlesearchAction}
+      className="bg-primary rounded-r-lg! px-4 py-2 text-white flex items-center justify-center hover:bg-primary/90"
+    >
+    <Send/>
+    </button>
+  </div>
+
+  {/* Status Filter */}
+  <div className="">
+    <Select
+      value={filter}
+      onValueChange={(newStatus) => setFilter(newStatus)}
+    >
+      <SelectTrigger className="w-full rounded-lg! border-2 border-primary dark:border-gray-600">
+        <SelectValue placeholder="Select Status" />
+      </SelectTrigger>
+      <SelectContent className="bg-white dark:bg-gray-800 border border-gray-300 dark:border-gray-600 rounded-lg shadow-md">
+        <SelectItem value="all">All Statuses</SelectItem>
+        <SelectItem value="PENDING">PENDING</SelectItem>
+        <SelectItem value="CANCELED">CANCELED</SelectItem>
+        <SelectItem value="PICKED">PICKED</SelectItem>
+        <SelectItem value="IN_TRANSIT">IN_TRANSIT</SelectItem>
+        <SelectItem value="DELIVERED">DELIVERED</SelectItem>
+        <SelectItem value="RETURNED_REQUEST">RETURNED_REQUEST</SelectItem>
+      </SelectContent>
+    </Select>
+  </div>
+
+</div>
+
 
       <Table className="table-auto border-collapse border border-gray-300">
         <TableCaption>All Receiver Parcels Retrieved Successfully</TableCaption>
@@ -221,10 +251,11 @@ export default function ReceiverPercelTable() {
                   </TableCell>
                   <TableCell className="border border-gray-300">
                     <Select
-                      value={selectedStatus}
+                      // value={selectedStatus}
                       onValueChange={(newStatus) =>
                         setSelectedStatus(newStatus)
                       }
+                       onOpenChange={() => setActiveButton(percel._id)}
                     >
                       <SelectTrigger className="w-32">
                         <SelectValue placeholder="Select Status" />
@@ -242,9 +273,11 @@ export default function ReceiverPercelTable() {
                         )
                       }
                       className="mt-2 bg-chart-2"
-                      disabled={!selectedStatus}
+                      disabled={activeButton !== percel._id}
                     >
-                      Update Status
+                    {activeButton === percel._id
+                              ? selectedStatus
+                              : "Update Status"}
                     </Button>
                   </TableCell>
 
@@ -264,7 +297,8 @@ export default function ReceiverPercelTable() {
       </Table>
 
       {/* Pagination */}
-      <div className="flex">
+      {
+        getIncomeingPercel?.percelData?.length>=10 &&<div className="flex">
         <div className="ml-auto">
           <PaginationFiLtering
             currentPage={currentPage}
@@ -273,6 +307,7 @@ export default function ReceiverPercelTable() {
           />
         </div>
       </div>
+      }
 
       {/* Modal for Delivery History */}
       {isModalOpen && selectedParcel && (

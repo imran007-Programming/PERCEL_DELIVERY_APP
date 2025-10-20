@@ -3,7 +3,7 @@ import Logo from "@/assets/Logo/Logo"
 export default function Footer() {
   return (
     <div className="">
-      <footer className=" dark:bg-gray-900">
+      <footer className="">
         <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
           <div className="lg:flex lg:items-start lg:gap-8">
             <div className="">
@@ -37,7 +37,7 @@ export default function Footer() {
                       type="email"
                       id="UserEmail"
                       placeholder="john@rhcp.com"
-                      className="w-full border-none focus:border-transparent focus:ring-transparent sm:text-sm dark:bg-gray-900 dark:text-white"
+                      className="w-full border-none focus:border-transparent focus:ring-transparent sm:text-sm  dark:text-white"
                     />
 
                     <button className="mt-1 w-full bg-primary px-6 py-3 text-sm font-bold tracking-wide text-white uppercase transition-none sm:mt-0 sm:w-auto sm:shrink-0">

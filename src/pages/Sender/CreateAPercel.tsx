@@ -18,7 +18,7 @@ export default function CreateAPercel() {
   return (
     <div className="flex items-center justify-center min-h-screen p-4 ">
       <div className="w-full max-w-3xl ">
-         <h1 className="text-3xl my-2 text-primary">Create A Percel</h1><br/>
+         <h1 className="text-3xl my-2 text-primary text-center" >Create A Percel</h1><br/>
         {senderId ? (
           <PercelForm senderId={senderId} />
         ) : (

@@ -63,6 +63,7 @@ export function LoginForm({
     };
     try {
       const result = await login(userInfo).unwrap();
+      
       const userRole = result?.data?.user?.role;
 
       if (userRole === role.ADMIN) {

@@ -7,19 +7,40 @@ import { ThemeProvider } from "./components/Providers/ThemeProvider";
 import { Provider } from "react-redux";
 import { store } from "./components/Redux/store";
 import { Toaster } from "sonner";
-import Loader from "./components/ui/Loader";
-// import Loader from "./components/ui/Loader";
+import loaderJson from "./assets/lottie/Forklift loading truck.json";
+import LottieLoader from "./shared/lotttieAnimation";
+import { DelayedSuspense } from "./shared/DelayedSuspense";
+// import SocketManager from "./components/Hooks/ScocketManager";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <Provider store={store}>
       <ThemeProvider defaultTheme="system">
         <Toaster theme="system" richColors />
-
+        {/* <SocketManager /> */}
         {/* Suspense wrapper */}
-        <Suspense fallback={<Loader />}>
+        {/* <DelayedSuspense
+          delay={2000}
+          fallback={
+            <LottieLoader
+              animationData={loaderJson}
+              size={150}
+              ariaLabel="Loading app..."
+            />
+          }
+        > */}
+        <Suspense
+          fallback={
+            <LottieLoader
+              animationData={loaderJson}
+              size={150}
+              ariaLabel="Loading app..."
+            />
+          }
+        >
           <RouterProvider router={router} />
         </Suspense>
+        {/* </DelayedSuspense> */}
       </ThemeProvider>
     </Provider>
   </StrictMode>

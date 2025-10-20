@@ -1,7 +1,11 @@
-import CourierCharge from "@/components/Modules/CourierCharege";
-import HeroSection from "@/components/Modules/HeroSection";
-import HeroSection1 from "@/components/Modules/HeroSection1";
-import OurFacelities from "@/components/Modules/OurFacelities";
+import CourierCharge from "@/components/Modules/Public/CourierCharege";
+import HeroSection from "@/components/Modules/Public/HeroSection";
+import OurFacelities from "@/components/Modules/Public/OurFacelities";
+import ScrollToTopProgress from "@/components/ui/scrollToTop";
+import HereWithUs from "@/components/Modules/Public/HereWithUs";
+import OurAchievement from "@/components/Modules/Public/OurAchievement";
+import { OurPartner } from "@/components/Modules/Public/OurPartner";
+import UserChat from "@/components/Modules/liveChat/UserChat";
 
 
 export default function HomePage() {
@@ -16,10 +20,18 @@ export default function HomePage() {
      </div>
      <div>
 
-      <HeroSection1/>
+      <HereWithUs/>
      </div>
      <div>
       <CourierCharge/>
+      <ScrollToTopProgress/>
+      <UserChat/>
+     </div>
+     <div>
+    <OurAchievement/>
+     </div>
+     <div>
+    <OurPartner/>
      </div>
     </div>
   );

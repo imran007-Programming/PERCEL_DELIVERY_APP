@@ -1,5 +1,6 @@
 import { useUserInfoQuery } from "@/components/Redux/Features/Auth/auth.api";
-import Loader from "@/components/ui/Loader";
+import loaderJson from "../../assets/lottie/Forklift loading truck.json"
+import LottieLoader from "@/shared/lotttieAnimation";
 import type { Trole } from "@/types";
 
 import type { ComponentType } from "react";
@@ -11,7 +12,12 @@ export const withAuth = (Component: ComponentType, requiredRole?: Trole) => {
     const { data, isFetching } = useUserInfoQuery(undefined);
 
     if (isFetching) {
-      return <Loader />;
+      return (
+      <LottieLoader
+        animationData={loaderJson}
+        size={150}
+        ariaLabel="Loading app..."
+      />)
     }
 
     if (!data?.data?.email) {

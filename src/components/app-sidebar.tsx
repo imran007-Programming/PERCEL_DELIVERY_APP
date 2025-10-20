@@ -16,22 +16,34 @@ import Logo from "@/assets/Logo/Logo";
 import { Link, useLocation } from "react-router";
 
 import { getSidebarsItems } from "@/util/GenarateSidebars/GenarateSidebars";
-import { useUserInfoQuery } from "./Redux/Features/Auth/auth.api";
+import { authApi, useLogoutMutation, useUserInfoQuery } from "./Redux/Features/Auth/auth.api";
 import { cn } from "@/lib/utils";
+import { useDispatch } from "react-redux";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: userInfo } = useUserInfoQuery(undefined);
+  const [logout] = useLogoutMutation();
   const location = useLocation();
   // This is sample data.
   const data = {
     navMain: getSidebarsItems(userInfo?.data?.role),
   };
 
+   const dispatch = useDispatch();
+    const handleLogout = async () => {
+      try {
+        await logout(undefined);
+        dispatch(authApi.util.resetApiState());
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
   return (
-    <Sidebar {...props}>
-      <SidebarHeader>
+    <Sidebar className=" " {...props}>
+      <SidebarHeader >
         <Link to="/">
-          <div className="flex justify-between items-center gap-2">
+          <div className="flex justify-between items-center gap-2 my-4">
             <Logo />
             <p className="text-xl font-bold italic">
               FastTrack{" "}
@@ -80,7 +92,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         ))}
       </SidebarContent>
       <SidebarRail />
-           {/* <button className="bg-primary p-5 ">Logout</button> */}
+           <button   onClick={handleLogout} className="bg-primary text-white  p-2 ">Logout</button>
     </Sidebar>
   );
 }

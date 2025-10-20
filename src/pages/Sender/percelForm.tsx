@@ -111,232 +111,277 @@ const [createPercel]=useCreatePercelMutation()
   yesterDay.setDate(yesterDay.getDate() - 1);
 
   return (
-    <div className="">
-       
-      <Form {...form}>
-        <form
-          onSubmit={form.handleSubmit(onSubmit)}
-          className="w-2/3 space-y-10"
-        >
-          <FormField
-            control={form.control}
-            name="recevierName"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Receiver Name</FormLabel>
-                <FormControl>
-                  <Input placeholder="Receiver Name" {...field} />
+    <div className="p-5">
+  <Form {...form}>
+    <form
+      onSubmit={form.handleSubmit(onSubmit)}
+      className="grid grid-cols-1 sm:grid-cols-2 gap-6" // responsive grid layout
+    >
+      {/* Receiver Name */}
+      <FormField
+        control={form.control}
+        name="recevierName"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Receiver Name</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Receiver Name"
+                {...field}
+                className="rounded-lg border-gray-300 dark:border-gray-600"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Receiver Email */}
+      <FormField
+        control={form.control}
+        name="recevierEmail"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Receiver Email</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Receiver Email"
+                {...field}
+                className="rounded-lg border-gray-300 dark:border-gray-600"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Receiver Phone */}
+      <FormField
+        control={form.control}
+        name="recevierPhone"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Receiver Phone</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Receiver Phone"
+                {...field}
+                className="rounded-lg border-gray-300 dark:border-gray-600"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Receiver Address */}
+      <FormField
+        control={form.control}
+        name="recevierAddress"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Receiver Address</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Receiver Address"
+                {...field}
+                className="rounded-lg border-gray-300 dark:border-gray-600"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Parcel Type */}
+      <FormField
+        control={form.control}
+        name="percelType"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Parcel Type</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Parcel Type"
+                {...field}
+                className="rounded-lg border-gray-300 dark:border-gray-600"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Weight Value */}
+      <FormField
+        control={form.control}
+        name="weight.value"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Weight Value</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                placeholder="Weight Value"
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+                className="rounded-lg border-gray-300 dark:border-gray-600"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Weight Unit */}
+      <FormField
+        control={form.control}
+        name="weight.unit"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Weight Unit</FormLabel>
+            <FormControl>
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <FormControl className="w-full">
+                  <SelectTrigger>
+                    <SelectValue placeholder="Select Weight Unit" />
+                  </SelectTrigger>
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+                <SelectContent>
+                  <SelectItem value="kg">Kg</SelectItem>
+                  <SelectItem value="gm">Gm</SelectItem>
+                </SelectContent>
+              </Select>
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-          <FormField
-            control={form.control}
-            name="recevierEmail"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Receiver Email</FormLabel>
+      {/* Fee */}
+      <FormField
+        control={form.control}
+        name="fee"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Fee</FormLabel>
+            <FormControl>
+              <Input
+                type="number"
+                placeholder="Fee"
+                {...field}
+                onChange={(e) => field.onChange(Number(e.target.value))}
+                className="rounded-lg border-gray-300 dark:border-gray-600"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
+
+      {/* Estimate Delivery Date */}
+      <FormField
+        control={form.control}
+        name="estimate_deleivery_date"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Estimate Delivery Date</FormLabel>
+            <Popover>
+              <PopoverTrigger asChild>
                 <FormControl>
-                  <Input placeholder="Receiver Email" {...field} />
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "w-full text-left font-normal",
+                      !field.value && "text-muted-foreground"
+                    )}
+                  >
+                    {field.value ? format(field.value, "PPP") : "Pick a date"}
+                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                  </Button>
                 </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+              </PopoverTrigger>
+              <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                  mode="single"
+                  selected={new Date(field.value)}
+                  onSelect={field.onChange}
+                  disabled={(date) => date < yesterDay}
+                  captionLayout="dropdown"
+                />
+              </PopoverContent>
+            </Popover>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-          <FormField
-            control={form.control}
-            name="recevierPhone"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Receiver Phone</FormLabel>
-                <FormControl>
-                  <Input placeholder="Receiver Phone" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      {/* Pickup Address */}
+      <FormField
+        control={form.control}
+        name="pickupAddress"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Pickup Address</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Pickup Address"
+                {...field}
+                className="rounded-lg border-gray-300 dark:border-gray-600"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-          <FormField
-            control={form.control}
-            name="recevierAddress"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Receiver Address</FormLabel>
-                <FormControl>
-                  <Input placeholder="Receiver Address" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      {/* Dispatch Location */}
+      <FormField
+        control={form.control}
+        name="dispatchLocation"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Dispatch Location</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Dispatch Location"
+                {...field}
+                className="rounded-lg border-gray-300 dark:border-gray-600"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-          <FormField
-            control={form.control}
-            name="percelType"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Parcel Type</FormLabel>
-                <FormControl>
-                  <Input placeholder="Parcel Type" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      {/* Current Location */}
+      <FormField
+        control={form.control}
+        name="currentLocation"
+        render={({ field }) => (
+          <FormItem>
+            <FormLabel>Current Location</FormLabel>
+            <FormControl>
+              <Input
+                placeholder="Current Location"
+                {...field}
+                className="rounded-lg border-gray-300 dark:border-gray-600"
+              />
+            </FormControl>
+            <FormMessage />
+          </FormItem>
+        )}
+      />
 
-          <FormField
-            control={form.control}
-            name="weight.value"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Weight Value</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Weight Value"
-                    {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value))} // Ensure it's a number
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
+      {/* Submit Button (full width) */}
+      <div className="sm:col-span-2">
+        <Button type="submit" className="w-full">
+          Submit
+        </Button>
+      </div>
+    </form>
+  </Form>
+</div>
 
-          <FormField
-            control={form.control}
-            name="fee"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Fee</FormLabel>
-                <FormControl>
-                  <Input
-                    type="number"
-                    placeholder="Fee"
-                    {...field}
-                    onChange={(e) => field.onChange(Number(e.target.value))} // Ensure it's a number
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="weight.unit"
-            render={({ field }) => (
-              <FormItem className="">
-                <FormLabel>Weight Unit</FormLabel>
-                <Select
-                  onValueChange={field.onChange}
-                  defaultValue={field.value}
-                >
-                  <FormControl className="w-auto ">
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select a Weight Unit" />
-                    </SelectTrigger>
-                  </FormControl>
-                  <SelectContent className="">
-                    <SelectItem value="kg">Kg</SelectItem>
-                    <SelectItem value="gm">Gm</SelectItem>
-                  </SelectContent>
-                </Select>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="estimate_deleivery_date"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel>Estimate Delivery Date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-[240px] pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={new Date(field.value)}
-                      onSelect={field.onChange}
-                      disabled={(date) => date < yesterDay}
-                      captionLayout="dropdown"
-                    />
-                  </PopoverContent>
-                </Popover>
-
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-          <FormField
-            control={form.control}
-            name="pickupAddress"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Pickup Address</FormLabel>
-                <FormControl>
-                  <Input placeholder="Pickup Address" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="dispatchLocation"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Dispatch Location</FormLabel>
-                <FormControl>
-                  <Input placeholder="Dispatch Location" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <FormField
-            control={form.control}
-            name="currentLocation"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Current Location</FormLabel>
-                <FormControl>
-                  <Input placeholder="Current Location" {...field} />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
-          />
-
-          <Button type="submit">Submit</Button>
-        </form>
-      </Form>
-    </div>
   );
 }

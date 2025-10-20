@@ -1,7 +1,7 @@
 import { motion, useInView } from "framer-motion";
-import image1 from "../../assets/Logo/Facelities_logo/1.png";
-import image2 from "../../assets/Logo/Facelities_logo/2.png";
-import image3 from "../../assets/Logo/Facelities_logo/3.png";
+import image1 from "../../../assets/Logo/Facelities_logo/1.png";
+import image2 from "../../../assets/Logo/Facelities_logo/2.png";
+import image3 from "../../../assets/Logo/Facelities_logo/3.png";
 import React from "react";
 
 export default function OurFacelities() {
@@ -11,7 +11,7 @@ export default function OurFacelities() {
   });
 
   return (
-    <div ref={ref} className="py-10"> {/* Adding some padding to the container */}
+    <div ref={ref} className="py-10  container "> {/* Adding some padding to the container */}
       <h2 className="text-4xl font-bold my-10 text-center">Our Facilities</h2>
       <div className="flex flex-col sm:flex-row justify-center items-center gap-10"> {/* Adjusting gap for better spacing */}
         
