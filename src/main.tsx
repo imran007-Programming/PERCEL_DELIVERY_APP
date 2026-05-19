@@ -9,7 +9,7 @@ import { store } from "./components/Redux/store";
 import { Toaster } from "sonner";
 import loaderJson from "./assets/lottie/Forklift loading truck.json";
 import LottieLoader from "./shared/lotttieAnimation";
-import { DelayedSuspense } from "./shared/DelayedSuspense";
+
 // import SocketManager from "./components/Hooks/ScocketManager";
 
 createRoot(document.getElementById("root")!).render(

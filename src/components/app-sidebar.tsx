@@ -20,10 +20,13 @@ import { authApi, useLogoutMutation, useUserInfoQuery } from "./Redux/Features/A
 import { cn } from "@/lib/utils";
 import { useDispatch } from "react-redux";
 
+
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   const { data: userInfo } = useUserInfoQuery(undefined);
   const [logout] = useLogoutMutation();
   const location = useLocation();
+   
+
   // This is sample data.
   const data = {
     navMain: getSidebarsItems(userInfo?.data?.role),
@@ -31,7 +34,11 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 
    const dispatch = useDispatch();
     const handleLogout = async () => {
+      
+
+
       try {
+         
         await logout(undefined);
         dispatch(authApi.util.resetApiState());
       } catch (error) {

@@ -25,16 +25,17 @@ export default function UserChat() {
   const chatEndRef = useRef<HTMLDivElement | null>(null);
   const { handleTyping, handleStopTyping } = useTyping(roomId, userName);
   useEffect(() => {
+    if (!userId) return;
     // Connect socket once when component mounts
     socket.connect();
 
     if (userId && userName && roomId) {
-    // Mark user active
-    socket.emit("user-online", { userId, userName, roomId });
+      // Mark user active
+      socket.emit("user-online", { userId, userName, roomId });
 
-    // Join chat room
-    socket.emit("join-room", { roomId, userName });
-  }
+      // Join chat room
+      socket.emit("join-room", { roomId, userName });
+    }
 
     // Listen for messages
     socket.on("chat-history", (message) => setChat(message));
